@@ -1,5 +1,5 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
     <g id="freepik--background-complete--inject-3">
       <path
         d="M686.46,178.67a13.61,13.61,0,0,1,3.48,10.05,23.87,23.87,0,0,1-3.24,10.34c-3.4,6.18-9.76,11.2-15.86,14.75-3.5-7-1.34-15.83,0-20.23,2.17-7,10.33-18.23,15.58-14.91"

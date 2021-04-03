@@ -16,5 +16,6 @@ export default {
 body {
   font-family: "Lato";
   overflow: hidden;
+  margin: 0;
 }
 </style>
