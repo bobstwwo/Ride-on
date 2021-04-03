@@ -1,0 +1,173 @@
+* {
+  font-family: "Roboto";
+}
+// REG START
+.title-el {
+  height: 17px;
+  margin-top: 30px;
+  font-size: 37px;
+  width: 460px;
+  background: #55c8bc;
+  & span {
+    position: relative;
+    bottom: 6px;
+    z-index: 10;
+  }
+}
+.el-text-title {
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  font-size: 18px;
+  z-index: 3;
+}
+.el-text-body {
+  color: #8399b7;
+  font-size: 14px;
+  z-index: 3;
+}
+.sec-el {
+  // background-color: coral;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.el2 {
+  height: 183px;
+}
+.sec-el-in {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #008080;
+  width: 46%;
+  height: 70%;
+  transition: all 0.4s;
+  &:hover {
+    cursor: pointer;
+    background-color: #55c8bc;
+    width: 50%;
+    height: 84%;
+    .el-text-body {
+      color: white;
+    }
+  }
+}
+.sec-el-in2 {
+  padding: 30px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #008080;
+  width: 42%;
+  height: 48%;
+  transition: all 0.4s;
+  &:hover {
+    cursor: pointer;
+    background-color: #55c8bc;
+    width: 44%;
+    height: 50%;
+    margin: -2%;
+    .el-text-body {
+      color: white;
+    }
+  }
+}
+.el-icon {
+  margin-right: 30px;
+  & img {
+    width: 120px;
+    height: 120px;
+  }
+}
+.section {
+  margin-top: -10px;
+}
+.title {
+  text-align: center;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  bottom: 20px;
+  & div {
+    margin-bottom: 10px;
+    // letter-spacing: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+// REG END
+.main {
+  display: flex;
+  justify-content: center;
+  height: 56%;
+}
+.main-inner {
+  text-align: center;
+  & svg {
+    width: 200px;
+    height: 136px;
+  }
+}
+.main-title,
+.main-desc {
+  font-family: "EB Garamond";
+  text-transform: uppercase;
+  font-size: 20px;
+  margin: 25px 0;
+  text-align: center;
+}
+.main-desc {
+  margin-top: 58px;
+  font-size: 40px;
+}
+.main-desc-text {
+  height: 14px;
+  background: #55c8bc;
+  & span {
+    position: relative;
+    bottom: 22px;
+    z-index: 10;
+  }
+}
+.fade-enter-active {
+  animation: fadeIn 0.4s;
+}
+.fade-leave-active {
+  animation: fadeOut 0.4s;
+}
+.svg-outer {
+  height: 136px;
+}
+.animated-main-desc {
+  transform-style: preserve-3d;
+  transform-origin: center right;
+  transition: transform 1s;
+}
+.turn {
+  opacity: 0;
+  transform: perspective(600px) translate(0px, -100%) rotateX(45deg);
+}
+@media (max-width: 979px) {
+  .main-desc-text {
+    background: transparent;
+  }
+}
+.main-enter-active,
+.main-leave-active {
+  animation: fadeOutUp 1s;
+}
+.reg-enter-active,
+.reg-leave-active {
+  animation: fadeOutUp2 1s;
+}
+.anim {
+  animation-name: fadeOutUp;
+  animation-duration: 0.5s;
+  opacity: 0;
+}

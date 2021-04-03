@@ -4,8 +4,17 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    isStart: true
+  },
+  mutations: {
+    changeStart(state) {
+      state.isStart = !state.isStart;
+    }
+  },
   actions: {},
   modules: {},
+  getters: {
+    isStart: (state) => state.isStart,
+  },
 });

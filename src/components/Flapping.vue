@@ -1,22 +1,68 @@
 <template>
-  <div class="main">
-    <div class="main-inner">
-      <div class="svg-outer">
-        <transition name="fade" mode="out-in">
-          <component v-bind:is="currentComponent"></component>
-        </transition>
-      </div>
-      <div class="main-title">Мы часто слышим это..</div>
-      <div class="main-desc">
-        <transition name="title">
-          <div class="animated-main-desc">
-            <div class="main-desc-text">
-              <span>{{ title }}</span>
+  <div>
+    <!-- <transition name="main"> -->
+    <div class="main">
+      <div class="main-inner">
+        <div class="svg-outer">
+          <transition name="fade" mode="out-in">
+            <component v-bind:is="currentComponent"></component>
+          </transition>
+        </div>
+        <div class="main-title">Мы часто слышим это..</div>
+        <div class="main-desc">
+          <transition name="title">
+            <div class="animated-main-desc">
+              <div class="main-desc-text">
+                <span>{{ title }}</span>
+              </div>
             </div>
-          </div>
-        </transition>
+          </transition>
+        </div>
       </div>
     </div>
+    <!-- </transition> -->
+    <!-- <transition name="reg"> -->
+    <!-- <div v-if="!this.isStart" class="reg">
+      <div class="title">
+        <div>В качестве кого вы хотите</div>
+        <div>
+          <div class="title-el"><span>зарегистрироваться ?</span></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="sec-el">
+          <div class="sec-el-in">
+            <div class="el-icon">
+              <img src="@/assets/img/Navigation-amico.svg" alt="" />
+            </div>
+            <div class="el-text">
+              <div class="el-text-title">
+                зарегистрироваться в качестве попутчика
+              </div>
+              <div class="el-text-body">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sec-el el2">
+          <div class="sec-el-in2">
+            <div class="el-icon">
+              <img src="@/assets/img/City driver-rafiki.svg" alt="" />
+            </div>
+            <div class="el-text">
+              <div class="el-text-title">
+                зарегистрироваться в качестве водителя
+              </div>
+              <div class="el-text-body">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <!-- </transition> -->
   </div>
 </template>
 
@@ -24,6 +70,7 @@
 import IconCar from "./flapping/Icon.vue";
 import IconCar2 from "./flapping/Icon2.vue";
 import IconCar3 from "./flapping/Icon3.vue";
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -43,32 +90,33 @@ export default {
     IconCar3,
   },
   computed: {
+    ...mapGetters(["isStart"]),
     currentComponent() {
       return this.componentName;
     },
   },
   methods: {
-    todo() {
-      setInterval(() => {
-        let currId = this.iconNames.indexOf(this.componentName);
-        switch (currId) {
-          case 0:
-            currId = 1;
-            break;
-          case 1:
-            currId = 2;
-            break;
-          case 2:
-            currId = 0;
-            break;
-        }
-        this.componentName = this.iconNames[currId];
-        this.title = this.titles[currId];
-      }, 4000);
-    },
+    ...mapMutations(["changeStart"]),
   },
   mounted() {
-    this.todo();
+    setInterval(() => {
+      let currId = this.iconNames.indexOf(this.componentName);
+      switch (currId) {
+        case 0:
+          currId = 1;
+          break;
+        case 1:
+          currId = 2;
+          break;
+        case 2:
+          currId = 0;
+          break;
+      }
+      if (this.isStart) {
+        this.componentName = this.iconNames[currId];
+        this.title = this.titles[currId];
+      }
+    }, 4000);
   },
   watch: {
     title: function () {
@@ -82,89 +130,5 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 56%;
-}
-.main-inner {
-  position: relative;
-  text-align: center;
-  & svg {
-    width: 200px;
-    height: 136px;
-  }
-}
-.main-title,
-.main-desc {
-  font-family: "EB Garamond";
-  text-transform: uppercase;
-  font-size: 20px;
-  margin: 25px 0;
-  text-align: center;
-}
-.main-desc {
-  margin-top: 58px;
-  font-size: 40px;
-}
-.main-desc-text {
-  height: 14px;
-  background: #55c8bc;
-  & span {
-    position: relative;
-    bottom: 22px;
-    z-index: 10;
-  }
-}
-.fade-enter-active {
-  animation: fadeIn 0.4s;
-}
-.fade-leave-active {
-  animation: fadeOut 0.4s;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    margin-top: 10%;
-  }
-  to {
-    opacity: 1;
-    width: 200px;
-    height: 136px;
-  }
-}
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    width: 200px;
-    height: 136px;
-  }
-  to {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    margin-top: 10%;
-  }
-}
-.svg-outer {
-  height: 136px;
-}
-.animated-main-desc {
-  transform-style: preserve-3d;
-  transform-origin: center right;
-  transition: transform 1s;
-}
-.turn {
-  opacity: 0;
-  transform: perspective(600px) translate(0px, -100%) rotateX(45deg);
-}
-@media (max-width: 979px) {
-  .main-desc-text {
-    background: transparent;
-  }
-}
+<style lang="scss" src="@/assets/scss/flapping.scss" scoped>
 </style>

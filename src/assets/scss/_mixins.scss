@@ -1,70 +1,46 @@
-@mixin center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-@mixin box($width) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: $width;
-  height: $width;
-  cursor: pointer;
-
-  @content;
-}
-@mixin workspace-box($width,$height) {
-  display: block;
-  position: relative;
-  width: $width;
-  height: $height;
-  border-radius: 8px;
-  background-color: $surface3__dark;
-  padding: 16px;
-  @content;
-}
-
-@mixin svg-color($default-color, $hover-color: $default-color) {
-  >svg {
-    fill: $default-color;
-    // @include center;
-
-    .dark-mode & {
-      @if $default-color == $surface5 {
-        fill: $surface5__dark;
-      } @else if $default-color == $surface4 {
-        fill: $surface4__dark;
-      } @else if $default-color == $surface3 {
-        fill: $surface3__dark;
-      } @else if $default-color == $surface2 {
-        fill: $surface3__dark;
-      } @else if $default-color == $surface1 {
-        fill: $surface1__dark;
-      } @else if $default-color == $text1 {
-        fill: $text1__dark;
-      } @else if $default-color == $text2 {
-        fill: $text2__dark;
-      }
-    }
+@keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  &:hover>svg {
-    fill: $hover-color;
+  100% {
+    opacity: 0;
+    transform: translateY(-120px);
   }
 }
-@mixin image-name($imageName, $hover: false) {
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: url("~@/assets/images/#{$imageName}");
-  transition: 0.2s all ease;
-
-  @if (($hover !=false)) {
-
-    &.active,
-    &:hover {
-      background-image: url("~@/assets/images/hovered/#{$imageName}");
-    }
+@keyframes fadeOutUp2 {
+  0% {
+    opacity: 1;
+    transform: translateY(-60px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin-top: 10%;
+  }
+  to {
+    opacity: 1;
+    width: 200px;
+    height: 136px;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    width: 200px;
+    height: 136px;
+  }
+  to {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin-top: 10%;
   }
 }
