@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <transition name="main"> -->
     <div class="main">
       <div class="main-inner">
         <div class="svg-outer">
@@ -20,10 +19,8 @@
         </div>
       </div>
     </div>
-    <!-- </transition> -->
-    <!-- <transition name="reg"> -->
-    <!-- <div v-if="!this.isStart" class="reg">
-      <div class="title">
+    <div class="reg hide">
+      <div id="title-anim" class="title">
         <div>В качестве кого вы хотите</div>
         <div>
           <div class="title-el"><span>зарегистрироваться ?</span></div>
@@ -61,8 +58,23 @@
           </div>
         </div>
       </div>
-    </div> -->
-    <!-- </transition> -->
+    </div>
+    <div v-if="isStart" class="start">
+      <div class="start-tl"><span>ПОГНАЛИ!</span></div>
+      <div class="start-bt">
+        <div @click="change()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 15.317"
+            class="picto-arrow-down"
+          >
+            <path
+              d="M15.76 7.35c-.36-.42-.99-.468-1.41-.11L9 11.826V0H7v11.825L1.65 7.24C1.233 6.883.6 6.93.24 7.35c-.36.42-.31 1.05.11 1.41L8 15.316l7.65-6.558c.42-.36.47-.99.11-1.41z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,6 +82,7 @@
 import IconCar from "./flapping/Icon.vue";
 import IconCar2 from "./flapping/Icon2.vue";
 import IconCar3 from "./flapping/Icon3.vue";
+import { animateMain } from "@/main/common";
 import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
@@ -97,6 +110,10 @@ export default {
   },
   methods: {
     ...mapMutations(["changeStart"]),
+    change() {
+      this.changeStart();
+      animateMain();
+    },
   },
   mounted() {
     setInterval(() => {

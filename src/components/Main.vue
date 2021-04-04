@@ -5,8 +5,8 @@
         <div class="title">Ride-ON</div>
         <div class="desc">Web-application for carpooling</div>
       </div>
-      <div class="burg-menu">
-        <svg id="svg-burger">
+      <div @click="openMenu()" class="burg-menu">
+        <svg v-if="!this.isMenuOpened" id="svg-burger">
           <rect
             id="first"
             fill="#FFFFFF"
@@ -26,25 +26,49 @@
             data-svg-origin="0 18"
           ></rect>
         </svg>
+        <svg
+          v-else
+          version="1.1"
+          id="Capa_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 512.001 512.001"
+          style="enable-background: new 0 0 512.001 512.001"
+          xml:space="preserve"
+        >
+          <g>
+            <g>
+              <path
+                d="M284.286,256.002L506.143,34.144c7.811-7.811,7.811-20.475,0-28.285c-7.811-7.81-20.475-7.811-28.285,0L256,227.717
+			L34.143,5.859c-7.811-7.811-20.475-7.811-28.285,0c-7.81,7.811-7.811,20.475,0,28.285l221.857,221.857L5.858,477.859
+			c-7.811,7.811-7.811,20.475,0,28.285c3.905,3.905,9.024,5.857,14.143,5.857c5.119,0,10.237-1.952,14.143-5.857L256,284.287
+			l221.857,221.857c3.905,3.905,9.024,5.857,14.143,5.857s10.237-1.952,14.143-5.857c7.811-7.811,7.811-20.475,0-28.285
+			L284.286,256.002z"
+              />
+            </g>
+          </g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+          <g></g>
+        </svg>
       </div>
     </div>
-    <flap-main></flap-main>
-    <div :class="{ hide: !isStart }" class="start">
-      <div class="start-tl"><span>ПОГНАЛИ!</span></div>
-      <div class="start-bt">
-        <div @click="change()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 15.317"
-            class="picto-arrow-down"
-          >
-            <path
-              d="M15.76 7.35c-.36-.42-.99-.468-1.41-.11L9 11.826V0H7v11.825L1.65 7.24C1.233 6.883.6 6.93.24 7.35c-.36.42-.31 1.05.11 1.41L8 15.316l7.65-6.558c.42-.36.47-.99.11-1.41z"
-            ></path>
-          </svg>
-        </div>
-      </div>
-    </div>
+    <flap-main v-if="!this.isMenuOpened"></flap-main>
+    <menu-page v-else></menu-page>
     <div class="footer">
       <div class="footer-el">
         <span>Войти</span>
@@ -58,27 +82,36 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import Flapping from "@/components/Flapping.vue";
-import Menu from "@/components/Flapping.vue";
+import Menu from "@/components/Menu.vue";
 import { animateMain } from "@/main/common";
+
 export default {
   data() {
-    return {};
+    return {
+      isMenuOpened: true,
+    };
   },
   components: {
     "flap-main": Flapping,
+    "menu-page": Menu,
   },
   computed: {
     ...mapGetters(["isStart"]),
   },
   methods: {
     ...mapMutations(["changeStart"]),
-    change() {
-      this.changeStart();
-      animateMain();
+    openMenu() {
+      this.isMenuOpened = !this.isMenuOpened;
+      if (!this.isStart) {
+        this.changeStart();
+      }
     },
   },
   mounted() {
-    // console.log(this.isStart);
+    // console.log(document.querySelector(".wrapper"));
+    // document.querySelector(".wrapper").onscroll = function () {
+    //   console.log("scrolling");
+    // };
   },
 };
 </script>

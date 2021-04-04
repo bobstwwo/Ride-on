@@ -8,6 +8,26 @@
     transform: translateY(-120px);
   }
 }
+@keyframes fadeOutDown {
+  0% {
+    opacity: 0;
+    transform: translateY(120px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOutDown2 {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @keyframes fadeOutUp2 {
   0% {
     opacity: 1;

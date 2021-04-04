@@ -6,7 +6,7 @@ module.exports = {
       sass: {
         prependData: `
                 @import "@/assets/scss/_variables.scss";
-                @import "@/assets/scss/_mixins.scss";
+                @import "@/assets/scss/_keyframes.scss";
                 @import "@/assets/scss/_fonts.scss";
             `,
       },
