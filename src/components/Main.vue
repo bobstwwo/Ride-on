@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="header">
       <div>
-        <div class="title">Ride-ON</div>
+        <router-link tag="div" class="title" to="/">Ride-ON</router-link>
         <div class="desc">Web-application for carpooling</div>
       </div>
       <div @click="openMenu()" class="burg-menu">
@@ -67,8 +67,7 @@
         </svg>
       </div>
     </div>
-    <flap-main v-if="!this.isMenuOpened"></flap-main>
-    <menu-page v-else></menu-page>
+    <router-view></router-view>
     <div class="footer">
       <div class="footer-el">
         <span>Войти</span>
@@ -80,9 +79,6 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import Flapping from "@/components/Flapping.vue";
-import Menu from "@/components/Menu.vue";
 import { animateMain } from "@/main/common";
 
 export default {
@@ -91,24 +87,20 @@ export default {
       isMenuOpened: false,
     };
   },
-  components: {
-    "flap-main": Flapping,
-    "menu-page": Menu,
-  },
-  computed: {
-    ...mapGetters(["isStart"]),
-  },
+  components: {},
+  computed: {},
   methods: {
-    ...mapMutations(["changeStart"]),
     openMenu() {
-      this.isMenuOpened = !this.isMenuOpened;
-      if (!this.isStart) {
-        this.changeStart();
+      if (this.isMenuOpened) {
+        this.$router.go(-1);
+        this.isMenuOpened = !this.isMenuOpened;
+      } else {
+        this.isMenuOpened = !this.isMenuOpened;
+        this.$router.push({ name: "menu" });
       }
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 

@@ -1,45 +1,31 @@
-import { createRouter, createWebHistory } from 'vue-router'; 
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-import Cart from '@/views/Cart';
-import Checkout from '@/views/checkout/Base';
-import ProductsList from '@/views/ProductsList';
-import Product from '@/views/Product';
-import CheckoutStep1 from '@/views/checkout/Step1';
-import CheckoutStep2 from '@/views/checkout/Step2';
+import FlapMain from '@/views/FlapMain';
+import RegList from '@/views/RegList';
+import Menu from '@/views/Menu';
+
+Vue.use(VueRouter);
 
 let routes = [
 	{
-		name: 'cart',
-		path: '/cart',
-		component: Cart
-	},
-	{
-		name: 'checkout',
-		path: '/order',
-		component: Checkout,
-		children: [
-			{
-				path: '',
-				component: CheckoutStep1
-			},
-			{
-				path: 'step-2',
-				component: CheckoutStep2
-			}
-		]
-	},
-	{
-		name: 'catalog',
+		name: 'flap-main',
 		path: '/',
-		component: ProductsList
+		component: FlapMain
 	},
 	{
-		path: '/product/:id',
-		component: Product
-	}
+		name: 'reg-list',
+		path: '/reg-list',
+		component: RegList
+	},
+	{
+		name: 'menu',
+		path: '/menu',
+		component: Menu
+	},
 ];
 
-export default createRouter({
-	routes,
-	history: createWebHistory(process.env.BASE_URL)
-});
+export default new VueRouter({
+	mode: 'history',
+	routes
+})

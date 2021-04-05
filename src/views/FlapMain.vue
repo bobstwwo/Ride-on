@@ -19,47 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="reg hide">
-      <div id="title-anim" class="title">
-        <div>В качестве кого вы хотите</div>
-        <div>
-          <div class="title-el"><span>зарегистрироваться ?</span></div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="sec-el">
-          <div class="sec-el-in">
-            <div class="el-icon">
-              <img src="@/assets/img/Navigation-amico.svg" alt="" />
-            </div>
-            <div class="el-text">
-              <div class="el-text-title">
-                зарегистрироваться в качестве попутчика
-              </div>
-              <div class="el-text-body">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="sec-el el2">
-          <div class="sec-el-in2">
-            <div class="el-icon">
-              <img src="@/assets/img/City driver-rafiki.svg" alt="" />
-            </div>
-            <div class="el-text">
-              <div class="el-text-title">
-                зарегистрироваться в качестве водителя
-              </div>
-              <div class="el-text-body">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-if="isStart" class="start">
+    <div class="start">
       <div class="start-tl"><span>ПОГНАЛИ!</span></div>
       <div class="start-bt">
         <div @click="change()">
@@ -79,9 +39,9 @@
 </template>
 
 <script>
-import IconCar from "./flapping/Icon.vue";
-import IconCar2 from "./flapping/Icon2.vue";
-import IconCar3 from "./flapping/Icon3.vue";
+import IconCar from "@/components/flapping/Icon.vue";
+import IconCar2 from "@/components/flapping/Icon2.vue";
+import IconCar3 from "@/components/flapping/Icon3.vue";
 import { animateMain } from "@/main/common";
 import { mapGetters, mapMutations } from "vuex";
 export default {
@@ -112,7 +72,9 @@ export default {
     ...mapMutations(["changeStart"]),
     change() {
       this.changeStart();
-      animateMain();
+      animateMain().then(() => {
+        this.$router.push({ name: "reg-list" });
+      });
     },
   },
   mounted() {
