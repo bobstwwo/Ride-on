@@ -88,7 +88,7 @@ import { animateMain } from "@/main/common";
 export default {
   data() {
     return {
-      isMenuOpened: true,
+      isMenuOpened: false,
     };
   },
   components: {
@@ -108,10 +108,6 @@ export default {
     },
   },
   mounted() {
-    // console.log(document.querySelector(".wrapper"));
-    // document.querySelector(".wrapper").onscroll = function () {
-    //   console.log("scrolling");
-    // };
   },
 };
 </script>
