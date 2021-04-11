@@ -72,7 +72,7 @@
       <div class="footer-el">
         <span>Войти</span>
         <span>Правила</span>
-        <span>О нас</span>
+        <router-link tag="span" to="/about">О нас</router-link>
       </div>
     </div>
   </div>

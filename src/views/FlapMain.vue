@@ -72,7 +72,7 @@ export default {
     ...mapMutations(["changeStart"]),
     change() {
       this.changeStart();
-      animateMain().then(() => {
+      animateMain(".svg-outer", ".main-title", ".main-desc").then(() => {
         this.$router.push({ name: "reg-list" });
       });
     },

@@ -8,7 +8,7 @@
     </div>
     <div class="section">
       <div class="sec-el">
-        <div class="sec-el-in">
+        <div @click="changeRoute('driver')" class="sec-el-in">
           <div class="el-icon">
             <img src="@/assets/img/Navigation-amico.svg" alt="" />
           </div>
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="sec-el el2">
-        <div class="sec-el-in2">
+        <div @click="changeRoute('customer')" class="sec-el-in2">
           <div class="el-icon">
             <img src="@/assets/img/City driver-rafiki.svg" alt="" />
           </div>
@@ -43,19 +43,31 @@
 
 <script>
 import { animateRegList } from "@/main/common";
+import { animateMain } from "@/main/common";
 export default {
-    data() {
-    return {
-    };
+  data() {
+    return {};
   },
-  components: {
-  },
-  computed: {
-  },
+  components: {},
+  computed: {},
   methods: {
+    changeRoute(el) {
+      if (el === "driver") {
+        this.$router.push({ name: "driver-reg" });
+      } else {
+        this.$router.push({ name: "passenger-reg" });
+      }
+    },
   },
-  mounted() {
-    animateRegList();
+  async mounted() {
+    await animateRegList(".reg", "#title-anim", ".sec-el-in", ".sec-el-in2");
+  },
+  beforeRouteEnter(to, from, next) {
+    next();
+  },
+  async beforeRouteLeave(to, from, next) {
+    await animateMain("#title-anim", ".sec-el-in", ".sec-el-in2");
+    next();
   },
 };
 </script>

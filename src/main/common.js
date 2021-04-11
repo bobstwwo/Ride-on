@@ -1,10 +1,9 @@
-
-export function animateMain() {
+export function animateMain(el1, el2, el3) {
     return new Promise((resolve) => {
-        const main = document.querySelector(".main");
-        const svgOuter = document.querySelector(".svg-outer");
-        const mainTitle = document.querySelector(".main-title");
-        const mainDesc = document.querySelector(".main-desc");
+        // const main = document.querySelector(".main");
+        const svgOuter = document.querySelector(el1); //".svg-outer"
+        const mainTitle = document.querySelector(el2); //".main-title"
+        const mainDesc = document.querySelector(el3); //".main-desc"
 
         svgOuter.classList.add("anim");
         setTimeout(() => {
@@ -29,20 +28,22 @@ export function animateMenu() {
     });
 }
 
-export function animateRegList() {
-    console.log(22);
-    const reg = document.querySelector(".reg");
-    const title = document.querySelector("#title-anim");
-    const sectionIn = document.querySelector(".sec-el-in");
-    const sectionIn2 = document.querySelector(".sec-el-in2");
-    reg.classList.add("opac-zero");
-    reg.classList.remove("hide");
-    title.classList.add("animDown");
-    setTimeout(() => {
-        sectionIn.classList.add("animDown");
+export function animateRegList(containerSelector,firstSelector,secondSelector,thirdSelector) {
+    return new Promise((resolve) => {
+        const container = document.querySelector(containerSelector);
+        const first = document.querySelector(firstSelector);
+        const second = document.querySelector(secondSelector);
+        const third = document.querySelector(thirdSelector);
+        container.classList.add("opac-zero");
+        container.classList.remove("hide");
+        first.classList.add("animDown");
         setTimeout(() => {
-            sectionIn2.classList.add("animDown");
-            reg.classList.remove("opac-zero");
+            second.classList.add("animDown");
+            setTimeout(() => {
+                third.classList.add("animDown");
+                container.classList.remove("opac-zero");
+                resolve();
+            }, 100);
         }, 100);
-    }, 100);
+    });
 }

@@ -158,7 +158,7 @@
   animation: fadeOutUp 1s;
 }
 .anim {
-  animation-name: fadeOutUp;
+  animation-name: fadeOutUp !important;
   animation-duration: 0.5s;
   opacity: 0;
 }
@@ -216,7 +216,6 @@
     height: 20px !important;
   }
 }
-
 @media (max-width: 979px) {
   .main-desc-text {
     background: transparent;
