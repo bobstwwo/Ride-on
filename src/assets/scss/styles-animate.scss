@@ -1,0 +1,19 @@
+.opac-zero {
+    opacity: 0;
+}
+.hide {
+    display: none;
+}
+.animDown {
+    animation-name: fadeOutDown;
+    animation-duration: 0.5s;
+}
+.anim {
+    animation-name: fadeOutUp !important;
+    animation-duration: 0.5s;
+    opacity: 0;
+}
+.animRightToLeft {
+    animation-name: fadeRightToLeft;
+    animation-duration: 0.8s;
+}

@@ -7,14 +7,7 @@
       </div>
       <div @click="openMenu()" class="burg-menu">
         <svg v-if="!this.isMenuOpened" id="svg-burger">
-          <rect
-            id="first"
-            fill="#FFFFFF"
-            x="0"
-            y="1"
-            width="26"
-            height="2"
-          ></rect>
+          <rect id="first" fill="#FFFFFF" x="0" y="1" width="26" height="2"></rect>
           <rect fill="#FFFFFF" x="0" y="9" width="26" height="2"></rect>
           <rect
             id="last"
@@ -79,7 +72,7 @@
 </template>
 
 <script>
-import { animateMain } from "@/main/common";
+import {animateHide} from '@/main/common';
 
 export default {
   data() {
@@ -87,7 +80,8 @@ export default {
       isMenuOpened: false,
     };
   },
-  components: {},
+  components: {
+  },
   computed: {},
   methods: {
     openMenu() {
@@ -96,7 +90,7 @@ export default {
         this.isMenuOpened = !this.isMenuOpened;
       } else {
         this.isMenuOpened = !this.isMenuOpened;
-        this.$router.push({ name: "menu" });
+        this.$router.push({name: 'menu'});
       }
     },
   },

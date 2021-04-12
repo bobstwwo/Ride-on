@@ -1,0 +1,37 @@
+// STEPS START_________________________
+.steps {
+    width: 23%;
+    padding: 12px;
+
+    position: absolute;
+    top: 30%;
+    left: 0;
+}
+.step-info {
+    margin: 0 12px;
+    font-family: "Roboto";
+    letter-spacing: 0.5px;
+    letter-spacing: 0.5px;
+    color: #5e6f88;
+    transition: color 1.5s;
+}
+.step-line {
+    width: 0.6px;
+    height: 34px;
+    background: #5e6f88;
+    position: relative;
+    bottom: 10px;
+}
+.step-line-circ {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #5e6f88;
+    position: relative;
+    top: 20px;
+    right: 2px;
+}
+.last-line {
+    height: 60px;
+}
+// STEPS END_________________________

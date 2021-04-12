@@ -8,6 +8,7 @@ module.exports = {
                 @import "@/assets/scss/_variables.scss";
                 @import "@/assets/scss/_keyframes.scss";
                 @import "@/assets/scss/_fonts.scss";
+                @import "@/assets/scss/_root.scss";
             `,
       },
     },

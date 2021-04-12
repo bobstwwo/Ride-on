@@ -13,9 +13,7 @@
             <img src="@/assets/img/Navigation-amico.svg" alt="" />
           </div>
           <div class="el-text">
-            <div class="el-text-title">
-              зарегистрироваться в качестве попутчика
-            </div>
+            <div class="el-text-title">зарегистрироваться в качестве попутчика</div>
             <div class="el-text-body">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
             </div>
@@ -28,9 +26,7 @@
             <img src="@/assets/img/City driver-rafiki.svg" alt="" />
           </div>
           <div class="el-text">
-            <div class="el-text-title">
-              зарегистрироваться в качестве водителя
-            </div>
+            <div class="el-text-title">зарегистрироваться в качестве водителя</div>
             <div class="el-text-body">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
             </div>
@@ -42,8 +38,7 @@
 </template>
 
 <script>
-import { animateRegList } from "@/main/common";
-import { animateMain } from "@/main/common";
+import {animateShow, animateHide} from '@/main/common';
 export default {
   data() {
     return {};
@@ -52,21 +47,18 @@ export default {
   computed: {},
   methods: {
     changeRoute(el) {
-      if (el === "driver") {
-        this.$router.push({ name: "driver-reg" });
+      if (el === 'driver') {
+        this.$router.push({name: 'driver-reg'});
       } else {
-        this.$router.push({ name: "passenger-reg" });
+        this.$router.push({name: 'passenger-reg'});
       }
     },
   },
   async mounted() {
-    await animateRegList(".reg", "#title-anim", ".sec-el-in", ".sec-el-in2");
-  },
-  beforeRouteEnter(to, from, next) {
-    next();
+    await animateShow('.reg', '#title-anim', '.sec-el-in', '.sec-el-in2');
   },
   async beforeRouteLeave(to, from, next) {
-    await animateMain("#title-anim", ".sec-el-in", ".sec-el-in2");
+    await animateHide('#title-anim', '.sec-el-in', '.sec-el-in2');
     next();
   },
 };

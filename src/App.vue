@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import Main from "./components/Main.vue";
+import Main from './components/Main.vue';
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Main,
   },
@@ -14,7 +14,8 @@ export default {
 
 <style lang="scss">
 body {
-  font-family: "Lato";
+  // font-family: "Lato";
+  font-family: var(--body-font);
   overflow: hidden;
   margin: 0;
 }
