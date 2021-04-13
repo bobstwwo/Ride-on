@@ -1,11 +1,12 @@
 // STEPS START_________________________
 .steps {
-    width: 23%;
+    width: 50%;
     padding: 12px;
 
     position: absolute;
     top: 30%;
     left: 0;
+    font-size: 16px;
 }
 .step-info {
     margin: 0 12px;
@@ -32,6 +33,6 @@
     right: 2px;
 }
 .last-line {
-    height: 60px;
+    height: 50px;
 }
 // STEPS END_________________________

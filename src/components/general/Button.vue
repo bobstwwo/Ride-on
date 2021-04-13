@@ -4,15 +4,17 @@
       <div class="next">Перейти далее</div>
       <div class="ok"><span>OK!</span></div>
     </div>
-    <div class="warning">{{ warningTitle }}</div>
+    <div v-if="show" class="warning">{{ warningTitle }}</div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['warningTitle'],
+  props: ['warningTitle', 'show'],
   data() {
-    return {};
+    return {
+      showWarn: false,
+    };
   },
 };
 </script>

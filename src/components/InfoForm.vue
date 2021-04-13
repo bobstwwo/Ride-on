@@ -2,17 +2,17 @@
   <div class="data-form">
     <form>
       <div class="group">
-        <input v-model="name" type="text" required />
+        <input @change="setName($event.target.value.trim())" type="text" required />
         <span class="bar"></span>
         <label>Имя</label>
       </div>
       <div class="group">
-        <input type="text" required />
+        <input @change="setSurname($event.target.value.trim())" type="text" required />
         <span class="bar"></span>
         <label>Фамилия</label>
       </div>
       <div class="group">
-        <input type="text" required />
+        <input @change="setSecondName($event.target.value.trim())" type="text" required />
         <span class="bar"></span>
         <label>Отчество</label>
       </div>
@@ -21,13 +21,17 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 export default {
   data() {
-    return {
-      name: '',
-      surname: '',
-      secondName: '',
-    };
+    return {};
+  },
+  methods: {
+    ...mapMutations({
+      setName: 'registration/setName',
+      setSurname: 'registration/setSurname',
+      setSecondName: 'registration/setSecondName',
+    }),
   },
 };
 </script>

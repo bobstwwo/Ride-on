@@ -38,8 +38,7 @@
 import IconCar from '@/components/flapping/Icon.vue';
 import IconCar2 from '@/components/flapping/Icon2.vue';
 import IconCar3 from '@/components/flapping/Icon3.vue';
-import {animateHide} from '@/main/common';
-import {mapGetters, mapMutations} from 'vuex';
+import { animateHide } from '@/main/common';
 export default {
   data() {
     return {
@@ -59,17 +58,14 @@ export default {
     IconCar3,
   },
   computed: {
-    ...mapGetters(['isStart']),
     currentComponent() {
       return this.componentName;
     },
   },
   methods: {
-    ...mapMutations(['changeStart']),
     change() {
-      this.changeStart();
       animateHide('.svg-outer', '.main-title', '.main-desc').then(() => {
-        this.$router.push({name: 'reg-list'});
+        this.$router.push({ name: 'reg-list' });
       });
     },
   },
@@ -87,10 +83,8 @@ export default {
           currId = 0;
           break;
       }
-      // if (this.isStart) {
-        this.componentName = this.iconNames[currId];
-        this.title = this.titles[currId];
-      // }
+      this.componentName = this.iconNames[currId];
+      this.title = this.titles[currId];
     }, 4000);
   },
   watch: {

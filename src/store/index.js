@@ -1,20 +1,20 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+
+import Registration from "./modules/registration";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    isStart: true,
-  },
-  mutations: {
-    changeStart(state) {
-      state.isStart = !state.isStart;
-    },
-  },
-  actions: {},
-  modules: {},
-  getters: {
-    isStart: (state) => state.isStart,
+  modules: {
+    "registration": Registration,
   },
 });
+
+
+// state: {},
+// mutations: {},
+// actions: {},
+// modules: {},
+// getters: {},
