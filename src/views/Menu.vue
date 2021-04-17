@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { animateMenu } from "@/main/common";
+import { animateMenu } from '@/main/common';
 export default {
   data() {
     return {};
@@ -69,7 +69,7 @@ p {
   position: relative;
   top: 20px;
   &::after {
-    content: " ";
+    content: ' ';
     width: 18px;
     margin: 0px 13px;
     border-bottom: 1px solid #8399b7;
@@ -88,7 +88,7 @@ p {
     color: white;
   }
   &::after {
-    content: "";
+    content: '';
     height: 20px;
     background: #55c8bc;
     position: relative;

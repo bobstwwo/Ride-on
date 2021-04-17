@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import {animateShow, animateHide} from '@/main/common';
+import { animateShow, animateHide } from '@/main/common';
 export default {
   data() {
     return {};
@@ -48,9 +48,9 @@ export default {
   methods: {
     changeRoute(el) {
       if (el === 'driver') {
-        this.$router.push({name: 'driver-reg'});
+        this.$router.push({ name: 'driver-reg' });
       } else {
-        this.$router.push({name: 'passenger-reg'});
+        this.$router.push({ name: 'passenger-reg' });
       }
     },
   },
@@ -64,5 +64,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="@/assets/scss/flapping.scss" scoped>
-</style>
+<style lang="scss" src="@/assets/scss/flapping.scss" scoped></style>

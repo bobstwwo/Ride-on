@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div v-if="!isAutorized" class="wrapper">
     <div class="header">
       <div>
         <router-link tag="div" class="title" to="/">Ride-ON</router-link>
@@ -61,18 +61,22 @@
       </div>
     </div>
     <router-view></router-view>
+    <div>{{ this.isAutorized }}</div>
     <div class="footer">
       <div class="footer-el">
-        <span>Войти</span>
+        <span @click="$router.push({ name: 'login' })">Войти</span>
         <span>Правила</span>
         <router-link tag="span" to="/about">О нас</router-link>
       </div>
     </div>
   </div>
+  <my-account v-else></my-account>
 </template>
 
 <script>
-import {animateHide} from '@/main/common';
+import { mapMutations, mapGetters } from 'vuex';
+import { animateHide } from '@/main/common';
+import Account from '@/components/Account';
 
 export default {
   data() {
@@ -81,8 +85,13 @@ export default {
     };
   },
   components: {
+    'my-account': Account,
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      isAutorized: 'main-module/isAutorized',
+    }),
+  },
   methods: {
     openMenu() {
       if (this.isMenuOpened) {
@@ -90,7 +99,7 @@ export default {
         this.isMenuOpened = !this.isMenuOpened;
       } else {
         this.isMenuOpened = !this.isMenuOpened;
-        this.$router.push({name: 'menu'});
+        this.$router.push({ name: 'menu' });
       }
     },
   },
@@ -98,5 +107,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="@/assets/scss/main.scss" scoped>
-</style>
+<style lang="scss" src="@/assets/scss/main.scss" scoped></style>

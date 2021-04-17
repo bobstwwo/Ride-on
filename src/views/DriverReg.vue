@@ -29,10 +29,17 @@
       </div>
       <div class="step-4 df">
         <div :class="{ grey: this.position === 4 ? true : false }" class="step-info numb">04</div>
+        <div class="step-line"><div class="step-line-circ"></div></div>
+        <div :class="{ white: this.position === 4 ? true : false }" class="step-info text">
+          Email/Пароль
+        </div>
+      </div>
+      <div class="step-5 df">
+        <div :class="{ grey: this.position === 5 ? true : false }" class="step-info numb">05</div>
         <div class="step-line last-line">
           <div class="step-line-circ"></div>
         </div>
-        <div :class="{ white: this.position === 4 ? true : false }" class="step-info text">
+        <div :class="{ white: this.position === 5 ? true : false }" class="step-info text">
           Правила сервиса
         </div>
       </div>
@@ -42,24 +49,24 @@
         <component v-bind:is="currentComponent"></component>
       </transition>
     </div>
-    <my-button
-      :warningTitle="this.warningTitle"
-      :show="this.showWarning"
-      @clicked="nextBtn()"
-    ></my-button>
+    <my-button :warningTitle="this.warningTitle" :show="this.showWarning" @clicked="nextBtn()">
+    </my-button>
     <!-- <myAudio></myAudio> -->
   </div>
 </template>
 
 <script>
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 import { mapMutations, mapGetters } from 'vuex';
 import { animateShow, animateHide, animateSteps } from '@/main/common';
 import myAudio from '@/components/general/Audio';
-import InfoForm from '@/components/InfoForm';
-import PhoneNumber from '@/components/PhoneNumber';
-import Documents from '@/components/Documents';
+import InfoForm from '@/components/registration/InfoForm';
+import PhoneNumber from '@/components/registration/PhoneNumber';
+import Documents from '@/components/registration/Documents';
 import Button from '@/components/general/Button';
-import Rules from '@/components/Rules';
+import Rules from '@/components/registration/Rules';
+import EmailPassword from '@/components/registration/EmailPassword';
 export default {
   components: {
     myButton: Button,
@@ -68,6 +75,7 @@ export default {
     PhoneNumber,
     Documents,
     Rules,
+    EmailPassword,
   },
   data() {
     return {
@@ -85,12 +93,18 @@ export default {
       phone: 'registration/phone',
       birthday: 'registration/birthday',
       documents: 'registration/documents',
+      allChecked: 'registration/allChecked',
+      email: 'registration/email',
+      password: 'registration/password',
     }),
     currentComponent() {
       return this.componentName;
     },
   },
   methods: {
+    ...mapMutations({
+      setAutorized: 'main-module/setAutorized',
+    }),
     nextBtn() {
       if (this.componentName === 'InfoForm') {
         if (this.name !== '' && this.surname !== '') {
@@ -101,18 +115,46 @@ export default {
           this.showWarning = true;
         }
       } else if (this.componentName === 'PhoneNumber') {
-        if (this.phone !== '' && this.birthday !== '') {
+        if (this.phone !== '') {
           this.showWarning = false;
           this.position = 3;
           this.componentName = 'Documents';
         } else {
-          this.warningTitle = 'Поля номера телефона и даты рождения - обязательны!';
+          this.warningTitle = 'Поля номера телефона - обязательно!';
           this.showWarning = true;
         }
       } else if (this.componentName === 'Documents') {
-        this.componentName = 'Rules';
+        this.componentName = 'EmailPassword';
         this.position = 4;
+      } else if (this.componentName === 'EmailPassword') {
+        if (this.email !== '' && this.password !== '') {
+          this.showWarning = false;
+          this.componentName = 'Rules';
+          this.position = 5;
+        } else {
+          this.warningTitle = 'Email и пароль - обязательны!';
+          this.showWarning = true;
+        }
+      } else if (this.componentName === 'Rules') {
+        if (this.allChecked) {
+          this.finished();
+          this.showWarning = false;
+        } else {
+          this.warningTitle = 'Подтвертите, что согласны с правилами сервиса!';
+          this.showWarning = true;
+        }
       }
+    },
+    finished() {
+      firebase
+        .default.auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.setAutorized();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   async mounted() {

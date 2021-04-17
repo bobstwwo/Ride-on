@@ -3,21 +3,46 @@
     <div class="df">
       <ul>
         <li>
-          <input id="c1" type="checkbox" />
+          <input v-model="arr[0]" id="c1" type="checkbox" />
           <label for="c1">Lorem ipsum dolor sit ametLorem ipsum dolor sit ame</label>
         </li>
         <li>
-          <input id="c2" type="checkbox" checked />
-          <label for="c2">Lorem ipsum dolor sit amet</label>
+          <input v-model="arr[1]" id="c2" type="checkbox" />
+          <label for="c2">Lorem ipsum dolor sit ametLorem ipsum dolor sit ame</label>
         </li>
         <li>
-          <input id="c2" type="checkbox" checked />
-          <label for="c2">Lorem ipsum dolor sit amet</label>
+          <input v-model="arr[2]" id="c2" type="checkbox" />
+          <label for="c2">Lorem ipsum dolor sit ametLorem ipsum dolor sit ame</label>
         </li>
       </ul>
     </div>
   </div>
 </template>
+
+<script>
+import { mapMutations } from 'vuex';
+export default {
+  data() {
+    return {
+      arr: [false, false, false],
+    };
+  },
+  methods: {
+    ...mapMutations({
+      setAllChecked: 'registration/setAllChecked',
+    }),
+  },
+  watch: {
+    arr: function (val) {
+      const all = val.every((el) => {
+        return el;
+      });
+      this.setAllChecked(all);
+    },
+  },
+  mounted() {},
+};
+</script>
 
 <style lang="scss" scoped>
 .df {

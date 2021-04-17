@@ -99,5 +99,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="@/assets/scss/flapping.scss" scoped>
-</style>
+<style lang="scss" src="@/assets/scss/flapping.scss" scoped></style>

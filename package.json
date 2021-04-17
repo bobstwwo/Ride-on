@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "animate.css": "^4.1.1",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "fetch": "^1.1.0",
     "firebase": "^8.3.3",
     "vue": "^2.6.11",
     "vue-inputmask": "^0.2.1",

@@ -2,7 +2,12 @@
   <div class="doc-container">
     <form style="position: relative">
       <div class="input-file-container">
-        <input @change="setDocuments($event.target.value.trim())" class="input-file" id="my-file" type="file" />
+        <input
+          @change="setDocuments($event.target.value.trim())"
+          class="input-file"
+          id="my-file"
+          type="file"
+        />
         <label tabindex="0" for="my-file" class="input-file-trigger">
           <span>Выберите файл</span>
         </label>
