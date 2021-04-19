@@ -2,7 +2,7 @@
   <div class="conteiner">
     <div class="menu">
       <ul>
-        <li>
+        <li @click="$router.push({ name: 'login' })">
           <p class="item-idx">01</p>
           <p class="item-title"><span>Авторизация</span></p>
         </li>
@@ -14,7 +14,7 @@
           <p class="item-idx">03</p>
           <p class="item-title"><span>Правила пользования сервисом</span></p>
         </li>
-        <li>
+        <li @click="$router.push({ name: 'driver-reg' })">
           <p class="item-idx">04</p>
           <p class="item-title"><span>Регистрация для водителей</span></p>
         </li>

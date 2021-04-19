@@ -14,7 +14,6 @@ export default {
 
 <style lang="scss">
 body {
-  // font-family: "Lato";
   font-family: var(--body-font);
   overflow: hidden;
   margin: 0;

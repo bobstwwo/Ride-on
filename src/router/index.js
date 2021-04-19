@@ -8,6 +8,7 @@ import About from '@/views/About';
 import DriverReg from '@/views/DriverReg';
 import PassengerReg from '@/views/PassengerReg';
 import Login from '@/views/Login';
+import Account from '@/views/Account';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -49,6 +50,12 @@ let routes = [
     path: '/login',
     component: Login,
   },
+  {
+    name: 'dashboard',
+    path: '/dashboard',
+    component: Account,
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = new VueRouter({
@@ -57,15 +64,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const isAuthenticated = firebase
-    .default.auth().currentUser;
-  console.log("isauthenticated", isAuthenticated);
-  console.log("requiresAuth", requiresAuth);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const isAuthenticated = firebase.default.auth().currentUser;
   if (requiresAuth && !isAuthenticated) {
-    next("/login");
+    next('/login');
   } else {
     next();
+  }
+  if ((to.name === 'login' || to.name === 'reg-list' || to.name === 'driver-reg') && isAuthenticated) {
+    next('/dashboard');
   }
 });
 

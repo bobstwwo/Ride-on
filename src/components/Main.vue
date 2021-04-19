@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isAutorized" class="wrapper">
+  <div :class="{ blur: loading }" class="wrapper">
     <div class="header">
       <div>
         <router-link tag="div" class="title" to="/">Ride-ON</router-link>
@@ -9,15 +9,7 @@
         <svg v-if="!this.isMenuOpened" id="svg-burger">
           <rect id="first" fill="#FFFFFF" x="0" y="1" width="26" height="2"></rect>
           <rect fill="#FFFFFF" x="0" y="9" width="26" height="2"></rect>
-          <rect
-            id="last"
-            fill="#FFFFFF"
-            x="0"
-            y="18"
-            width="26"
-            height="2"
-            data-svg-origin="0 18"
-          ></rect>
+          <rect id="last" fill="#FFFFFF" x="0" y="18" width="26" height="2" data-svg-origin="0 18"></rect>
         </svg>
         <svg
           v-else
@@ -61,7 +53,6 @@
       </div>
     </div>
     <router-view></router-view>
-    <div>{{ this.isAutorized }}</div>
     <div class="footer">
       <div class="footer-el">
         <span @click="$router.push({ name: 'login' })">Войти</span>
@@ -69,14 +60,18 @@
         <router-link tag="span" to="/about">О нас</router-link>
       </div>
     </div>
+    <div v-if="loading" class="preloader">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
   </div>
-  <my-account v-else></my-account>
 </template>
 
 <script>
 import { mapMutations, mapGetters } from 'vuex';
 import { animateHide } from '@/main/common';
-import Account from '@/components/Account';
 
 export default {
   data() {
@@ -84,12 +79,10 @@ export default {
       isMenuOpened: false,
     };
   },
-  components: {
-    'my-account': Account,
-  },
+  components: {},
   computed: {
     ...mapGetters({
-      isAutorized: 'main-module/isAutorized',
+      loading: 'skeleton/loading',
     }),
   },
   methods: {
@@ -107,4 +100,47 @@ export default {
 };
 </script>
 
-<style lang="scss" src="@/assets/scss/main.scss" scoped></style>
+<style lang="scss" scoped>
+@import '@/assets/scss/main.scss';
+.blur {
+  filter: blur(2px);
+}
+.preloader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #fff;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
+</style>
