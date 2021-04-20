@@ -5,6 +5,11 @@
     color: white;
     position: relative;
 }
+.flex-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .header {
     display: flex;
     justify-content: space-between;

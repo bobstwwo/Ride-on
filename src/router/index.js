@@ -9,8 +9,11 @@ import DriverReg from '@/views/DriverReg';
 import PassengerReg from '@/views/PassengerReg';
 import Login from '@/views/Login';
 import Account from '@/views/Account';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
+import AddDriver from '@/views/AddDriver';
+import NotFound from '@/views/404';
+import firebase from '@/firebase';
+// import * as firebase from 'firebase/app';
+// import 'firebase/auth';
 
 Vue.use(VueRouter);
 
@@ -55,6 +58,22 @@ let routes = [
     path: '/dashboard',
     component: Account,
     meta: { requiresAuth: true },
+    children: [
+      {
+        path: '/',
+        name: 'adding',
+        component: AddDriver
+      },
+      // {
+      //   path: 'posts',
+      //   component: UserPosts
+      // }
+    ]
+  },
+  {
+    name: 'not-found',
+    path: '/:pathMatch(.*)*',
+    component: NotFound
   },
 ];
 

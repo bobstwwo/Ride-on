@@ -23,7 +23,7 @@ export default {
       const userId = await firebase.default.auth().currentUser.uid;
       const dbRef = firebase.database().ref();
       dbRef.child("users").child(userId).get().then((data) => {
-        console.log(data);
+        store.state.user = new User(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday);
       }).catch((error) => {
         console.error(error);
       });

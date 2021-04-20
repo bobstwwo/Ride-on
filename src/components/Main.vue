@@ -1,6 +1,15 @@
 <template>
-  <div :class="{ blur: loading }" class="wrapper">
-    <div class="header">
+  <div
+    :class="{ blur: loading, 'flex-box': this.$router.currentRoute.matched[0].path === '/dashboard' }"
+    class="wrapper"
+  >
+    <div
+      :class="{
+        none:
+          this.$router.currentRoute.matched[0].path === '/dashboard' || this.$router.currentRoute.name === 'not-found',
+      }"
+      class="header"
+    >
       <div>
         <router-link tag="div" class="title" to="/">Ride-ON</router-link>
         <div class="desc">Web-application for carpooling</div>
@@ -53,7 +62,13 @@
       </div>
     </div>
     <router-view></router-view>
-    <div class="footer">
+    <div
+      :class="{
+        none:
+          this.$router.currentRoute.matched[0].path === '/dashboard' || this.$router.currentRoute.name === 'not-found',
+      }"
+      class="footer"
+    >
       <div class="footer-el">
         <span @click="$router.push({ name: 'login' })">Войти</span>
         <span>Правила</span>
@@ -83,6 +98,7 @@ export default {
   computed: {
     ...mapGetters({
       loading: 'skeleton/loading',
+      checkUser: 'user/checkUser',
     }),
   },
   methods: {
@@ -96,7 +112,9 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    console.log(this.$router.currentRoute.matched[0].path === '/dashboard');
+  },
 };
 </script>
 
@@ -142,5 +160,8 @@ export default {
     height: 72px;
     opacity: 0;
   }
+}
+.none {
+  display: none;
 }
 </style>

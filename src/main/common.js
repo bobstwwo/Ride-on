@@ -72,6 +72,27 @@ export function animateSteps() {
   });
 }
 
+export function animateSteps2() {
+  let parent = document.querySelector('.steps');
+  let steps = document.querySelectorAll('.steps > div');
+  return new Promise((resolve) => {
+    parent.classList.add('opac-zero');
+    parent.classList.remove('hide');
+    steps[0].classList.add('animRightToLeft');
+    setTimeout(() => {
+      steps[1].classList.add('animRightToLeft');
+      setTimeout(() => {
+        steps[2].classList.add('animRightToLeft');
+        setTimeout(() => {
+          steps[3].classList.add('animRightToLeft');
+          parent.classList.remove('opac-zero');
+          resolve();
+        }, 100);
+      }, 100);
+    }, 100);
+  });
+}
+
 export function jsForDoc() {
   document.querySelector('html').classList.add('js');
 
@@ -90,5 +111,40 @@ export function jsForDoc() {
   });
   fileInput.addEventListener('change', function (event) {
     the_return.innerHTML = this.value;
+  });
+}
+
+
+export function mainAccount() {
+  $(window)
+    .resize(function () {
+      if ($(window).width() > 1090) {
+        $(".sidebar").removeClass("collapse");
+      } else {
+        $(".sidebar").addClass("collapse");
+      }
+    })
+    .resize();
+}
+
+export function anime404() {
+  anime({
+    targets: '.row svg',
+    translateY: 10,
+    autoplay: true,
+    loop: true,
+    easing: 'easeInOutSine',
+    direction: 'alternate'
+  });
+
+  anime({
+    targets: '#zero',
+    translateX: 10,
+    autoplay: true,
+    loop: true,
+    easing: 'easeInOutSine',
+    direction: 'alternate',
+    scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 250 }],
+    rotateY: { value: '+=180', delay: 200 },
   });
 }
