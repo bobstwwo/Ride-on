@@ -1,8 +1,6 @@
 import User from '@/main/utils/User.js';
 import firebase from '@/firebase';
 
-// const db = firebase.database().ref('/users');
-
 export default {
   namespaced: true,
   state: {
@@ -20,18 +18,50 @@ export default {
     },
 
     async read(store) {
-      const userId = await firebase.default.auth().currentUser.uid;
-      const dbRef = firebase.database().ref();
-      dbRef.child("users").child(userId).get().then((data) => {
-        store.state.user = new User(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday);
-      }).catch((error) => {
-        console.error(error);
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          store.dispatch('skeleton/setLoading', true, { root: true })
+          const userId = firebase.default.auth().currentUser.uid;
+          const dbRef = firebase.database().ref();
+          dbRef.child("users").child(userId).get().then((data) => {
+            store.state.user = new User(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday);
+            store.dispatch('skeleton/setLoading', false, { root: true })
+          }).catch((error) => {
+            console.error(error);
+            store.dispatch('skeleton/setLoading', false, { root: true })
+          });
+        }
       });
     },
 
-    async update(key, value) {
-      await db.child(key).update(value);
-    }
+
+    async update(store, user) {
+      store.dispatch('skeleton/setLoading', true, { root: true })
+      const userId = await firebase.default.auth().currentUser.uid;
+      const dbRef = firebase.database().ref();
+      dbRef.child("users").child(userId).update(user).then(() => {
+        store.dispatch('skeleton/setLoading', false, { root: true })
+      }).catch((error) => {
+        console.error(error);
+        store.dispatch('skeleton/setLoading', false, { root: true })
+      });
+    },
+
+    async uploadFile(store, { file, path }) {
+      const filename = file.name;
+      const ext = filename.slice(filename.lastIndexOf('.'));
+      const userId = await firebase.default.auth().currentUser.uid;
+      firebase.storage().ref('files/' + userId + ext).put(file).then((response) => {
+        response.ref.getDownloadURL().then((downloadURL) => {
+          if (path === "profile-url") {
+            store.state.user.profileImg = downloadURL;
+          } else if (path === "passport-url") {
+            store.state.user.passport = downloadURL;
+          }
+          store.dispatch('update', store.state.user);
+        });
+      });
+    },
   },
   getters: {
     user: (state) => state.user,

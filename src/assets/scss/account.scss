@@ -91,6 +91,7 @@ img {
 .sidebar-link.is-active {
     color: #fff;
     font-weight: 600;
+    cursor: pointer;
 }
 .sidebar-link:hover:nth-child(2n + 1) svg,
 .sidebar-link.is-active:nth-child(2n + 1) svg {
@@ -136,14 +137,14 @@ img {
     display: flex;
     flex-direction: column;
 }
-.side-menu a {
+.side-menu div {
     display: flex;
     align-items: center;
     text-decoration: none;
     color: var(--body-color);
 }
-.side-menu a + a {
-    margin-top: 26px;
+.side-menu div + div {
+    margin-top: 18px;
 }
 .side-menu svg {
     width: 30px;

@@ -13,10 +13,8 @@
             <img src="@/assets/img/Navigation-amico.svg" alt="" />
           </div>
           <div class="el-text">
-            <div class="el-text-title">зарегистрироваться в качестве попутчика</div>
-            <div class="el-text-body">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+            <div class="el-text-title">зарегистрироваться в качестве водителя</div>
+            <div class="el-text-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
           </div>
         </div>
       </div>
@@ -26,10 +24,8 @@
             <img src="@/assets/img/City driver-rafiki.svg" alt="" />
           </div>
           <div class="el-text">
-            <div class="el-text-title">зарегистрироваться в качестве водителя</div>
-            <div class="el-text-body">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+            <div class="el-text-title">зарегистрироваться в качестве попутчика</div>
+            <div class="el-text-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
           </div>
         </div>
       </div>

@@ -22,6 +22,7 @@
             </div>
           </form>
           <div @click="login(email, password)" class="submit"><span>Авторизоваться</span></div>
+          <div @click="$router.push({ name: 'reg-list' })" class="reg-btn"><span>Регистация</span></div>
           <div class="err">{{ error }}</div>
         </div>
       </div>
@@ -58,7 +59,7 @@ export default {
         .then((data) => {
           this.read();
           this.setLoading(false);
-          this.$router.push({ name: 'dashboard' });
+          this.$router.push({ name: 'adding' });
         })
         .catch((error) => {
           this.setLoading(false);
@@ -79,6 +80,17 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/info-form.scss';
 @import '@/assets/scss/flapping.scss';
+.reg-btn {
+  color: #5e6f88;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: -40px;
+  text-decoration: underline;
+  &:hover {
+    cursor: pointer;
+  }
+}
 .section {
   padding: 40px 0 0 0;
 }

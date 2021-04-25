@@ -3,11 +3,20 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import Main from './components/Main.vue';
 export default {
   name: 'App',
   components: {
     Main,
+  },
+  methods: {
+    ...mapActions({
+      read: 'user/read',
+    }),
+  },
+  created() {
+    this.read();
   },
 };
 </script>

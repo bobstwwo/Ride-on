@@ -11,9 +11,9 @@ import Login from '@/views/Login';
 import Account from '@/views/Account';
 import AddDriver from '@/views/AddDriver';
 import NotFound from '@/views/404';
+import Profile from '@/views/Profile';
 import firebase from '@/firebase';
-// import * as firebase from 'firebase/app';
-// import 'firebase/auth';
+
 
 Vue.use(VueRouter);
 
@@ -64,10 +64,11 @@ let routes = [
         name: 'adding',
         component: AddDriver
       },
-      // {
-      //   path: 'posts',
-      //   component: UserPosts
-      // }
+      {
+        path: 'profile',
+        name: 'profile',
+        component: Profile
+      }
     ]
   },
   {

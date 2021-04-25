@@ -113,7 +113,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$router.currentRoute.matched[0].path === '/dashboard');
+    // console.log();
   },
 };
 </script>

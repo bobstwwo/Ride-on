@@ -2,12 +2,7 @@
   <div class="doc-container">
     <form style="position: relative">
       <div class="input-file-container">
-        <input
-          @change="setDocuments($event.target.value.trim())"
-          class="input-file"
-          id="my-file"
-          type="file"
-        />
+        <input @change="setPass($event)" class="input-file" id="my-file" type="file" />
         <label tabindex="0" for="my-file" class="input-file-trigger">
           <span>Выберите файл</span>
         </label>
@@ -29,6 +24,14 @@ export default {
     ...mapMutations({
       setDocuments: 'registration/setDocuments',
     }),
+    setPass(e) {
+      const files = event.target.files;
+      let filename = files[0].name;
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert('Add a valid File!');
+      }
+      this.setDocuments(files[0]);
+    },
   },
   mounted() {
     jsForDoc();

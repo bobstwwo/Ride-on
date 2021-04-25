@@ -7,15 +7,19 @@
         <div class="side-wrapper">
           <div class="side-title">МЕНЮ</div>
           <div class="side-menu">
-            <a class="sidebar-link discover is-active" href="#">
+            <div
+              @click="$router.push({ name: 'adding' })"
+              :class="{ 'is-active': $router.currentRoute.name === 'adding' }"
+              class="sidebar-link"
+            >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M9.135 20.773v-3.057c0-.78.637-1.414 1.423-1.414h2.875c.377 0 .74.15 1.006.414.267.265.417.625.417 1v3.057c-.002.325.126.637.356.867.23.23.544.36.87.36h1.962a3.46 3.46 0 002.443-1 3.41 3.41 0 001.013-2.422V9.867c0-.735-.328-1.431-.895-1.902l-6.671-5.29a3.097 3.097 0 00-3.949.072L3.467 7.965A2.474 2.474 0 002.5 9.867v8.702C2.5 20.464 4.047 22 5.956 22h1.916c.68 0 1.231-.544 1.236-1.218l.027-.009z"
                 />
               </svg>
               Добавить поездку
-            </a>
-            <a class="sidebar-link trending" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -24,16 +28,16 @@
                 />
               </svg>
               Найти попутчика
-            </a>
-            <a class="sidebar-link" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M11.23 7.29V3.283c0-.427.34-.782.77-.782.385 0 .711.298.763.677l.007.104v4.01h4.78c2.38 0 4.335 1.949 4.445 4.38l.005.215v5.04c0 2.447-1.887 4.456-4.232 4.569l-.208.005H6.44c-2.38 0-4.326-1.94-4.435-4.379L2 16.905v-5.03c0-2.447 1.878-4.466 4.222-4.58l.208-.004h4.8v6.402l-1.6-1.652a.755.755 0 00-1.09 0 .81.81 0 00-.22.568c0 .157.045.32.14.459l.08.099 2.91 3.015c.14.155.34.237.55.237a.735.735 0 00.465-.166l.075-.071 2.91-3.015c.3-.31.3-.816 0-1.126a.755.755 0 00-1.004-.077l-.086.077-1.59 1.652V7.291h-1.54z"
                 />
               </svg>
               Сообщения
-            </a>
-            <a class="sidebar-link" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -42,8 +46,8 @@
                 />
               </svg>
               Завершенные поездки
-            </a>
-            <a class="sidebar-link" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -52,13 +56,17 @@
                 />
               </svg>
               Мой рейтинг
-            </a>
+            </div>
           </div>
         </div>
         <div class="side-wrapper">
           <div class="side-title">РАЗНОЕ</div>
           <div class="side-menu">
-            <a class="sidebar-link" href="#">
+            <div
+              @click="$router.push({ name: 'profile' })"
+              :class="{ 'is-active': $router.currentRoute.name === 'profile' }"
+              class="sidebar-link"
+            >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -67,8 +75,8 @@
                 />
               </svg>
               Мой профиль
-            </a>
-            <a class="sidebar-link" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -77,8 +85,8 @@
                 />
               </svg>
               Tutorial
-            </a>
-            <a class="sidebar-link" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -87,8 +95,8 @@
                 />
               </svg>
               Competation
-            </a>
-            <a class="sidebar-link" href="#">
+            </div>
+            <div class="sidebar-link">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -97,7 +105,7 @@
                 />
               </svg>
               Community
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -129,7 +137,7 @@
               </svg>
             </div>
             <div v-if="isSelectBox" class="select-box">
-              <span>Мой профиль</span>
+              <span @click="goProfile()">Мой профиль</span>
               <span @click="signOut()">Выйти</span>
               <div @click="close()" data-v-54d3a52e="" class="exit">
                 <svg
@@ -189,7 +197,6 @@ import { mainAccount } from '@/main/common';
 export default {
   data() {
     return {
-      loggedIn: false,
       isSelectBox: false,
     };
   },
@@ -204,6 +211,10 @@ export default {
     },
     close() {
       this.isSelectBox = !this.isSelectBox;
+    },
+    goProfile() {
+      this.$router.push({ name: 'profile' });
+      this.close();
     },
   },
   mounted() {

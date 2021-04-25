@@ -87,6 +87,7 @@ export default {
       allChecked: 'registration/allChecked',
       email: 'registration/email',
       password: 'registration/password',
+      user: 'user/user',
     }),
     currentComponent() {
       return this.componentName;
@@ -98,6 +99,7 @@ export default {
     }),
     ...mapActions({
       create: 'user/create',
+      uploadFile: 'user/uploadFile',
     }),
     nextBtn() {
       if (this.componentName === 'InfoForm') {
@@ -129,7 +131,7 @@ export default {
         }
       } else if (this.componentName === 'Rules') {
         if (this.allChecked) {
-          this.$router.push({ name: 'dashboard' });
+          this.$router.push({ name: 'adding' });
           this.showWarning = false;
         } else {
           this.warningTitle = 'Подтвертите, что согласны с правилами сервиса!';
@@ -153,8 +155,10 @@ export default {
             phone: this.phone,
             email: this.email,
             birthday: this.birthday,
+            passport: this.documents,
           };
           this.setUser(obj);
+          this.uploadFile({ file: this.documents, path: 'passport-url' });
           this.create()
             .then(() => {
               console.log('Created new item successfully!');
