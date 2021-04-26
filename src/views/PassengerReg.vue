@@ -35,7 +35,7 @@
       </transition>
     </div>
     <my-button :warningTitle="this.warningTitle" :show="this.showWarning" @clicked="nextBtn()"> </my-button>
-    <!-- <myAudio></myAudio> -->
+    <myAudio></myAudio>
   </div>
 </template>
 
@@ -80,6 +80,7 @@ export default {
       allChecked: 'registration/allChecked',
       email: 'registration/email',
       password: 'registration/password',
+      profileImg: 'registration/profileImg',
     }),
     currentComponent() {
       return this.componentName;
@@ -124,7 +125,7 @@ export default {
       } else if (this.componentName === 'EmailPassword') {
         if (this.email !== '' && this.password !== '') {
           this.register();
-          this.$router.push({ name: 'dashboard' });
+          this.$router.push({ name: 'adding' });
         } else {
           this.warningTitle = 'Email и пароль - обязательны!';
           this.showWarning = true;
@@ -144,6 +145,8 @@ export default {
             phone: this.phone,
             email: this.email,
             birthday: this.birthday,
+            passport: '',
+            profileImg: this.profileImg,
           };
           this.setUser(obj);
           this.create()

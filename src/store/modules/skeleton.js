@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    loading: false,
+    loading: true,
   },
   actions: {
     setLoading(store, payload) {

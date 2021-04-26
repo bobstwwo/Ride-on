@@ -3,30 +3,49 @@
     <div class="top"><span>Редактирование профиля</span></div>
     <div class="pr-body">
       <div class="pr-body__top">
-        <div class="group">
-          <input disabled value="NAME" @change="setName($event.target.value.trim())" type="text" required />
+        <div @click="warning = !warning" class="group">
+          <input disabled :value="this.user.name" type="text" required />
           <span class="bar"></span>
           <label>Имя</label>
         </div>
-        <div class="group">
-          <input disabled value="SURNAME" @change="setName($event.target.value.trim())" type="text" required />
+        <div @click="warning = !warning" class="group">
+          <input disabled :value="this.user.surname" type="text" required />
           <span class="bar"></span>
           <label>Фамилия</label>
         </div>
-        <div class="group">
-          <input disabled value="SECONDNAME" @change="setName($event.target.value.trim())" type="text" required />
+        <div @click="warning = !warning" v-if="this.user.secondName" class="group">
+          <input disabled :value="this.user.secondName" type="text" required />
           <span class="bar"></span>
           <label>Отчество</label>
         </div>
       </div>
+      <div class="pr-body__top">
+        <div @click="warning = !warning" class="group">
+          <input disabled :value="this.user.phone" type="text" required />
+          <span class="bar"></span>
+          <label>Номер телефона</label>
+        </div>
+        <div @click="warning = !warning" class="group">
+          <input disabled :value="this.user.email" type="text" required />
+          <span class="bar"></span>
+          <label>Email</label>
+        </div>
+        <div @click="warning = !warning" v-if="this.user.birthday" class="group">
+          <input disabled :value="this.user.birthday" type="text" required />
+          <span class="bar"></span>
+          <label>Дата рождения</label>
+        </div>
+      </div>
       <div class="pr-body__bottom">
-        <div class="input">
-          <input @change="onfilePicked($event)" type="file" accept="image/*" />
+        <div>Выберите фотографию профиля:</div>
+        <ButtonWithoutWarn file="profile"></ButtonWithoutWarn>
+      </div>
+      <div v-if="docText" id="zxc">{{ docText }}</div>
+      <div v-if="warning" class="warn">
+        <div>
+          <span>Примечание:</span>
+          Для изменения свяжитесь с оператором!
         </div>
-        <div class="img">
-          <img :src="this.user.profileImg" alt="" />
-        </div>
-        <div class="profile-img">text</div>
       </div>
     </div>
   </div>
@@ -34,34 +53,59 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
+import ButtonWithoutWarn from '@/components/general/ButtonWithoutWarn';
 export default {
+  components: {
+    ButtonWithoutWarn,
+  },
   data() {
-    return {};
+    return {
+      warning: false,
+    };
   },
   methods: {
     ...mapActions({
       uploadFile: 'user/uploadFile',
+      read: 'user/read',
     }),
     onfilePicked(event) {
-      const files = event.target.files;
-      let filename = files[0].name;
-      if (filename.lastIndexOf('.') <= 0) {
-        return alert('Add a valid File!');
+      try {
+        const files = event.target.files;
+        let filename = files[0].name;
+        if (filename.lastIndexOf('.') <= 0) {
+          return alert('Add a valid File!');
+        }
+        const fileReader = new FileReader();
+        fileReader.addEventListener('load', () => {
+          this.imageUrl = fileReader.result;
+        });
+        fileReader.readAsDataURL(files[0]);
+        this.uploadFile({ file: files[0], path: 'profile-url' });
+      } catch (ex) {
+        console.info(ex.message);
       }
-      // const fileReader = new FileReader();
-      // fileReader.addEventListener('load', () => {
-      //   this.imageUrl = fileReader.result;
-      // });
-      // fileReader.readAsDataURL(files[0]);
-      this.uploadFile(files[0]);
     },
   },
   computed: {
     ...mapGetters({
       user: 'user/user',
     }),
+    docText() {
+      if (this.user.passport) return 'Документы подтверждены модератором!';
+      if (this.user.passport !== '' && this.user.passport !== true)
+        return 'Документы загружены, проверяются модератором!';
+      if (this.user.passport === '') return 'Документы не загружены, свяжитесь с модератором!';
+    },
   },
-  mounted() {},
+  watch: {
+    warning: function (val) {
+      if (val) {
+        setTimeout(() => {
+          this.warning = false;
+        }, 6000);
+      }
+    },
+  },
 };
 </script>
 
@@ -91,6 +135,11 @@ export default {
   font-size: 14px;
   color: #5e6f88;
 }
+.group input {
+  &:hover {
+    cursor: pointer;
+  }
+}
 .pr-body__top {
   display: flex;
   justify-content: space-around;
@@ -99,6 +148,7 @@ export default {
   margin-top: 40px;
   display: flex;
   justify-content: space-around;
+  align-items: center;
 }
 .img {
   width: 120px;
@@ -108,4 +158,35 @@ export default {
     height: 100%;
   }
 }
+.warn {
+  position: absolute;
+  z-index: 999;
+  left: 0;
+  bottom: -160px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  background: rgba($color: #283445, $alpha: 0.4);
+  padding: 12px 16px;
+  color: white;
+  & span {
+    color: yellowgreen;
+  }
+  animation-name: warnOnNameClick;
+  animation-duration: 0.8s;
+}
+.my-profile {
+  // background: rebeccapurple;
+  position: relative;
+}
+#zxc {
+  position: absolute;
+  left: 50%;
+  bottom: -110px;
+  transform: translate(-50%, 0);
+  padding: 16px 20px;
+  background: rgba($color: #283445, $alpha: 0.4);
+  color: white;
+}
 </style>>
+

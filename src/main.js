@@ -5,12 +5,14 @@ import store from './store';
 import router from './router';
 import JQuery from 'jquery'
 import anime from 'animejs/lib/anime.es.js';
+import Antd from 'ant-design-vue';
 window.$ = JQuery
 window.anime = anime
 
 const VueInputMask = require('vue-inputmask').default;
 
 Vue.use(VueInputMask);
+Vue.use(Antd);
 
 Vue.config.productionTip = false;
 

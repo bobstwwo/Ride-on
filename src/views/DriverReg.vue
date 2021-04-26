@@ -42,7 +42,7 @@
       </transition>
     </div>
     <my-button :warningTitle="this.warningTitle" :show="this.showWarning" @clicked="nextBtn()"> </my-button>
-    <!-- <myAudio></myAudio> -->
+    <myAudio></myAudio>
   </div>
 </template>
 
@@ -88,6 +88,7 @@ export default {
       email: 'registration/email',
       password: 'registration/password',
       user: 'user/user',
+      profileImg: 'registration/profileImg',
     }),
     currentComponent() {
       return this.componentName;
@@ -156,9 +157,11 @@ export default {
             email: this.email,
             birthday: this.birthday,
             passport: this.documents,
+            profileImg: this.profileImg,
           };
+          console.log(obj);
           this.setUser(obj);
-          this.uploadFile({ file: this.documents, path: 'passport-url' });
+          if (this.documents !== '') this.uploadFile({ file: this.documents, path: 'passport-url' });
           this.create()
             .then(() => {
               console.log('Created new item successfully!');

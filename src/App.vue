@@ -3,8 +3,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import Main from './components/Main.vue';
+import store from '@/store/index';
+
 export default {
   name: 'App',
   components: {
@@ -15,8 +17,13 @@ export default {
       read: 'user/read',
     }),
   },
-  created() {
-    this.read();
+  computed: {
+    ...mapGetters({
+      user: 'user/user',
+    }),
+  },
+  async mounted() {
+    await this.$store.dispatch('user/read');
   },
 };
 </script>

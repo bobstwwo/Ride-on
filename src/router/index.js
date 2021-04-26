@@ -13,6 +13,7 @@ import AddDriver from '@/views/AddDriver';
 import NotFound from '@/views/404';
 import Profile from '@/views/Profile';
 import firebase from '@/firebase';
+// import store from '@/store/index';
 
 
 Vue.use(VueRouter);

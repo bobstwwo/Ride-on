@@ -115,11 +115,7 @@
             <input type="text" placeholder="Search" />
           </div>
           <div class="user-settings">
-            <img
-              class="user-img"
-              src="https://images.unsplash.com/photo-1587918842454-870dbd18261a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=943&q=80"
-              alt=""
-            />
+            <img class="user-img" :src="this.user.profileImg" alt="" />
             <div @click="close()" class="user-name">Бабур</div>
             <svg :class="{ rotate: isSelectBox }" class="arrow" viewBox="0 0 492 492" fill="currentColor">
               <path
@@ -184,21 +180,30 @@
           </div>
         </div>
         <div class="right-container">
-          <router-view></router-view>
+          <router-view v-if="!loading"></router-view>
         </div>
+        <!-- <div>{{ user }}</div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import firebase from '@/firebase';
 import { mainAccount } from '@/main/common';
 export default {
   data() {
     return {
       isSelectBox: false,
+      profileImg: false,
     };
+  },
+  computed: {
+    ...mapGetters({
+      loading: 'skeleton/loading',
+      user: 'user/user',
+    }),
   },
   methods: {
     signOut() {
@@ -215,6 +220,11 @@ export default {
     goProfile() {
       this.$router.push({ name: 'profile' });
       this.close();
+    },
+  },
+  watch: {
+    user: function (val) {
+      this.profileImg = val.profileImg;
     },
   },
   mounted() {

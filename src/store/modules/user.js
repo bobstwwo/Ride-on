@@ -7,36 +7,38 @@ export default {
     user: null,
   },
   mutations: {
-    setUser(state, { role, name, surname, secondName, phone, email, birthday }) {
-      state.user = new User(role, name, surname, secondName, phone, email, birthday);
+    setUser(state, { role, name, surname, secondName, phone, email, birthday, passport, profileImg }) {
+      state.user = new User(role, name, surname, secondName, phone, email, birthday, passport, profileImg);
     },
   },
   actions: {
     async create(store) {
       const userId = await firebase.default.auth().currentUser.uid;
+      console.log(store.state.user);
       await firebase.database().ref('users/' + userId).set(store.state.user);
     },
 
     async read(store) {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          store.dispatch('skeleton/setLoading', true, { root: true })
           const userId = firebase.default.auth().currentUser.uid;
           const dbRef = firebase.database().ref();
-          dbRef.child("users").child(userId).get().then((data) => {
-            store.state.user = new User(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday);
+
+          const data = dbRef.child("users").child(userId).get().then((data) => {
+            store.state.user = new User(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().passport, data.val().profileImg);
             store.dispatch('skeleton/setLoading', false, { root: true })
           }).catch((error) => {
             console.error(error);
             store.dispatch('skeleton/setLoading', false, { root: true })
           });
+        } else {
+          store.dispatch('skeleton/setLoading', false, { root: true })
         }
       });
     },
 
 
     async update(store, user) {
-      store.dispatch('skeleton/setLoading', true, { root: true })
       const userId = await firebase.default.auth().currentUser.uid;
       const dbRef = firebase.database().ref();
       dbRef.child("users").child(userId).update(user).then(() => {

@@ -112,9 +112,6 @@ export default {
       }
     },
   },
-  mounted() {
-    // console.log();
-  },
 };
 </script>
 

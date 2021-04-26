@@ -15,5 +15,8 @@ module.exports = {
   },
   chainWebpack: (config) => {
     config.resolve.alias.set('@', path.resolve(__dirname, 'src'));
+    // config.when(process.env.NODE_ENV === 'development',
+    //   config => config.devtool('source-map')
+    // );
   },
 };
