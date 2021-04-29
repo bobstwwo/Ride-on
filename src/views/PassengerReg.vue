@@ -145,7 +145,6 @@ export default {
             phone: this.phone,
             email: this.email,
             birthday: this.birthday,
-            passport: '',
             profileImg: this.profileImg,
           };
           this.setUser(obj);

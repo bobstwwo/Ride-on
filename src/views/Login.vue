@@ -57,6 +57,7 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then((data) => {
+          console.log('LOGIN.vue login()');
           this.read();
           this.setLoading(false);
           this.$router.push({ name: 'adding' });

@@ -1,5 +1,7 @@
-import User from '@/main/utils/User.js';
+// import User from '@/main/utils/User.js';
 import firebase from '@/firebase';
+import Driver from '@/main/utils/Driver';
+import Passenger from '@/main/utils/Passenger';
 
 export default {
   namespaced: true,
@@ -8,13 +10,16 @@ export default {
   },
   mutations: {
     setUser(state, { role, name, surname, secondName, phone, email, birthday, passport, profileImg }) {
-      state.user = new User(role, name, surname, secondName, phone, email, birthday, passport, profileImg);
+      if (role === "Driver")
+        state.user = new Driver(role, name, surname, secondName, phone, email, birthday, passport, profileImg);
+      else if (role === "Passenger") {
+        state.user = new Passenger(role, name, surname, secondName, phone, email, birthday, profileImg);
+      }
     },
   },
   actions: {
     async create(store) {
       const userId = await firebase.default.auth().currentUser.uid;
-      console.log(store.state.user);
       await firebase.database().ref('users/' + userId).set(store.state.user);
     },
 
@@ -24,9 +29,15 @@ export default {
           const userId = firebase.default.auth().currentUser.uid;
           const dbRef = firebase.database().ref();
 
-          const data = dbRef.child("users").child(userId).get().then((data) => {
-            store.state.user = new User(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().passport, data.val().profileImg);
-            store.dispatch('skeleton/setLoading', false, { root: true })
+          dbRef.child("users").child(userId).get().then((data) => {
+            if (data.val()) {
+              if (data.val().role === "Driver") {
+                store.state.user = new Driver(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().passport, data.val().profileImg);
+              } else if (data.val().role === "Passenger") {
+                store.state.user = new Passenger(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().profileImg);
+              }
+              store.dispatch('skeleton/setLoading', false, { root: true })
+            }
           }).catch((error) => {
             console.error(error);
             store.dispatch('skeleton/setLoading', false, { root: true })

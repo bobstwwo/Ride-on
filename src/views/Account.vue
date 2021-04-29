@@ -115,7 +115,8 @@
             <input type="text" placeholder="Search" />
           </div>
           <div class="user-settings">
-            <img class="user-img" :src="this.user.profileImg" alt="" />
+            <img v-if="this.user && this.user.profileImg !== ''" class="user-img" :src="this.user.profileImg" alt="" />
+            <a-avatar v-else icon="user" />
             <div @click="close()" class="user-name">Бабур</div>
             <svg :class="{ rotate: isSelectBox }" class="arrow" viewBox="0 0 492 492" fill="currentColor">
               <path

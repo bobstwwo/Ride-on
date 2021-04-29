@@ -23,7 +23,6 @@ export default {
   methods: {
     ...mapActions({
       uploadFile: 'user/uploadFile',
-      read: 'user/read',
     }),
     onfilePicked(event) {
       try {

@@ -11,7 +11,7 @@ export default {
       email: '',
       allChecked: false,
       password: '',
-      profileImg: 'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
+      profileImg: '',
     };
   },
   actions: {},

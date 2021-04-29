@@ -66,7 +66,6 @@ export default {
   methods: {
     ...mapActions({
       uploadFile: 'user/uploadFile',
-      read: 'user/read',
     }),
     onfilePicked(event) {
       try {
@@ -91,10 +90,19 @@ export default {
       user: 'user/user',
     }),
     docText() {
-      if (this.user.passport) return 'Документы подтверждены модератором!';
-      if (this.user.passport !== '' && this.user.passport !== true)
-        return 'Документы загружены, проверяются модератором!';
-      if (this.user.passport === '') return 'Документы не загружены, свяжитесь с модератором!';
+      switch (this.user.passport) {
+        case ' ':
+          return 'Документы не загружены, свяжитесь с модератором!';
+          break;
+        case 'true':
+          return 'Документы подтверждены модератором!';
+        case 'false':
+          return 'Документы не соответствуют требованиям!';
+          break;
+        default:
+          return 'Документы проверяются модератором!';
+          break;
+      }
     },
   },
   watch: {

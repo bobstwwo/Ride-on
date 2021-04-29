@@ -159,7 +159,6 @@ export default {
             passport: this.documents,
             profileImg: this.profileImg,
           };
-          console.log(obj);
           this.setUser(obj);
           if (this.documents !== '') this.uploadFile({ file: this.documents, path: 'passport-url' });
           this.create()

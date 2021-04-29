@@ -23,6 +23,7 @@ export default {
     }),
   },
   async mounted() {
+    console.log('mounted App.vue');
     await this.$store.dispatch('user/read');
   },
 };
