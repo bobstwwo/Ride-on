@@ -1,0 +1,82 @@
+<template>
+  <div class="trips-container">
+    <div class="left">
+      <h3 @click="currentComponent = 'Unfinished'" :class="{ 'cl-white': currentComponent === 'Unfinished' }">
+        Активные поездки
+      </h3>
+      <h3 @click="currentComponent = 'Finished'" :class="{ 'cl-white': currentComponent === 'Finished' }">
+        Завершенные поездки
+      </h3>
+    </div>
+    <div class="right">
+      <component v-bind:is="currentComponent"></component>
+    </div>
+  </div>
+</template>
+
+<script>
+import Unfinished from '@/components/my-trips/Unfinished';
+import Finished from '@/components/my-trips/Finished';
+import { mapGetters, mapActions } from 'vuex';
+export default {
+  components: {
+    Unfinished,
+    Finished,
+  },
+  data() {
+    return {
+      currentComponent: 'Unfinished',
+    };
+  },
+  computed: {
+    ...mapGetters({
+      trips: 'driver/trips',
+    }),
+  },
+  methods: {
+    ...mapActions({
+      read: 'driver/read',
+    }),
+  },
+  created() {
+    this.read();
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.trips-container {
+  height: 80vh;
+  border-radius: 8px;
+
+  display: flex;
+  justify-content: space-between;
+}
+.left {
+  width: 30%;
+  height: 200px;
+  //   background: violet;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+  & h3 {
+    text-transform: uppercase;
+    margin: 0 0 30px 0;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+.right {
+  width: 70%;
+  max-height: 74vh;
+  overflow: auto;
+  //   background-color: var(--vgg-color);
+  border-radius: 8px;
+  margin-right: 70px;
+  color: white;
+}
+.cl-white {
+  color: white;
+}
+</style>

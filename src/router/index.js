@@ -12,8 +12,8 @@ import Account from '@/views/Account';
 import AddDriver from '@/views/AddDriver';
 import NotFound from '@/views/404';
 import Profile from '@/views/Profile';
+import Trips from '@/views/Trips';
 import firebase from '@/firebase';
-// import store from '@/store/index';
 
 
 Vue.use(VueRouter);
@@ -69,6 +69,11 @@ let routes = [
         path: 'profile',
         name: 'profile',
         component: Profile
+      },
+      {
+        path: 'trips',
+        name: 'trips',
+        component: Trips
       }
     ]
   },

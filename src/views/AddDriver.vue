@@ -3,103 +3,11 @@
     <div class="container__inner">
       <div class="append__el">
         <div class="append__header"><span>Пункт отправки</span></div>
-        <div class="search">
-          <div class="search__icon">
-            <svg
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              class="kirk-icon sc-gqjmRU jANYxY addressField-searchIcon"
-              width="18"
-              height="18"
-              aria-hidden="true"
-            >
-              <g
-                fill="none"
-                stroke="#708C91"
-                stroke-width="1"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-miterlimit="10"
-              >
-                <line x1="22" y1="22" x2="16.4" y2="16.4"></line>
-                <circle cx="10" cy="10" r="9"></circle>
-              </g>
-            </svg>
-          </div>
-          <div class="search__input">
-            <input id="suggest" :value="pointA" placeholder="Покровский б-р, 11" type="text" />
-          </div>
-          <div class="search__exit">
-            <svg
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              class="kirk-icon sc-gqjmRU jANYxY"
-              width="18"
-              height="18"
-              aria-hidden="true"
-            >
-              <path
-                d="M19 5L5 19M19 19L5 5"
-                fill="none"
-                stroke="#708C91"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-miterlimit="10"
-              ></path>
-            </svg>
-          </div>
-        </div>
+        <search-box placeholder="Покровский б-р, 11"></search-box>
       </div>
       <div class="append__el">
         <div class="append__header"><span>Пункт назначения</span></div>
-        <div class="search">
-          <div class="search__icon">
-            <svg
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              class="kirk-icon sc-gqjmRU jANYxY addressField-searchIcon"
-              width="18"
-              height="18"
-              aria-hidden="true"
-            >
-              <g
-                fill="none"
-                stroke="#708C91"
-                stroke-width="1"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-miterlimit="10"
-              >
-                <line x1="22" y1="22" x2="16.4" y2="16.4"></line>
-                <circle cx="10" cy="10" r="9"></circle>
-              </g>
-            </svg>
-          </div>
-          <div class="search__input">
-            <input id="suggest1" :value="pointB" placeholder="Красная площадь" type="text" />
-          </div>
-          <div class="search__exit">
-            <svg
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              class="kirk-icon sc-gqjmRU jANYxY"
-              width="18"
-              height="18"
-              aria-hidden="true"
-            >
-              <path
-                d="M19 5L5 19M19 19L5 5"
-                fill="none"
-                stroke="#708C91"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-miterlimit="10"
-              ></path>
-            </svg>
-          </div>
-        </div>
+        <search-box2 placeholder="Красная площадь"></search-box2>
       </div>
       <div class="append__el">
         <div class="append__header"><span>Когда состоится поездка?</span></div>
@@ -109,8 +17,10 @@
             :open.sync="open"
             @change="handleChange"
             type="datetime"
+            valueType="format"
             placeholder="Выберите дату и время"
-          ></date-picker>
+          >
+          </date-picker>
         </div>
       </div>
       <div class="append__el">
@@ -155,12 +65,13 @@
           <div @click="onSubmit" class="submit__btn"><span>Добавить поездку</span></div>
         </div>
       </div>
-      <!-- <div class="warning-block">NONO</div> -->
     </div>
   </div>
 </template>
 
 <script>
+import SearchBox from '@/components/trip-adding/SearchBox';
+import SearchBox2 from '@/components/trip-adding/SearchBox2';
 import DatePicker from 'vue2-datepicker';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
@@ -171,14 +82,14 @@ import { mapMutations, mapGetters, mapActions } from 'vuex';
 export default {
   components: {
     DatePicker,
+    SearchBox,
+    SearchBox2,
   },
   data() {
     return {
       departureTime: null,
       open: false,
       peopleNum: 2,
-      pointA: null,
-      pointB: null,
       showWarn: false,
     };
   },
@@ -189,6 +100,12 @@ export default {
     plus() {
       return this.peopleNum === 4;
     },
+    ...mapGetters({
+      pointA: 'helper/pointA',
+      pointB: 'helper/pointB',
+      trips: 'driver/trips',
+      firstTime: 'driver/firstTime',
+    }),
   },
   methods: {
     handleChange(value, type) {
@@ -210,7 +127,18 @@ export default {
           pointA: this.pointA,
           pointB: this.pointB,
         };
-        this.addTrip(data);
+        data.active = false;
+        this.read().then(() => {
+          if (this.firstTime) {
+            //Если первый раз добавляет
+            this.addTrip(data);
+            this.create();
+          } else {
+            //Если там уже что-то есть
+            this.addTrip(data);
+            this.update();
+          }
+        });
       } else {
         Swal.fire({
           title: 'Ошибка!',
@@ -220,62 +148,14 @@ export default {
         });
       }
     },
-    ...mapMutations({
-      addTrip: 'driver/addTrip',
+    ...mapActions({
+      read: 'driver/read',
+      create: 'driver/create',
+      update: 'driver/update',
     }),
     ...mapMutations({
       addTrip: 'driver/addTrip',
     }),
-  },
-  created() {
-    const script = document.createElement('script');
-
-    script.id = 'ymaps';
-    script.src = 'https://api-maps.yandex.ru/2.1/?50a0ee88-f1ab-4eca-87ec-9bc01278d33c&lang=ru_RU';
-    document.head.append(script);
-    script.onload = () => {
-      ymaps.ready(() => {
-        let input = document.getElementById('suggest');
-        let suggestView = new ymaps.SuggestView('suggest', {
-          offset: [10, 10],
-        });
-
-        suggestView.state.events.add('change', function (e) {
-          e.preventDefault;
-          let activeIndex = suggestView.state.get('activeIndex');
-          if (typeof activeIndex == 'number') {
-            let activeItem = suggestView.state.get('items')[activeIndex];
-            if (activeItem && activeItem.value != input.value) {
-              // input.value = activeItem.value;
-              // console.log(activeItem.value);
-            }
-          }
-        });
-
-        // __________________________________________________________
-        input = document.getElementById('suggest1');
-        suggestView = new ymaps.SuggestView('suggest1', {
-          offset: [10, 10],
-        });
-
-        suggestView.state.events.add('change', function (e) {
-          e.preventDefault;
-          let activeIndex = suggestView.state.get('activeIndex');
-          if (typeof activeIndex == 'number') {
-            let activeItem = suggestView.state.get('items')[activeIndex];
-            if (activeItem && activeItem.value != input.value) {
-              // input.value = activeItem.value;
-              // console.log(input);
-              // console.log(activeItem.value);
-            }
-          }
-        });
-      });
-    };
-  },
-  mounted() {},
-  destroyed() {
-    document.head.querySelector('script#ymaps').remove();
   },
 };
 </script>
@@ -303,45 +183,6 @@ export default {
   text-transform: uppercase;
   color: white;
   font-size: 24px;
-}
-.search {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 500px;
-  height: 30px;
-  background-color: #ededed;
-  padding: 8px 20px;
-  margin: 40px auto;
-  border-radius: 8px;
-  & .search__icon {
-    display: flex;
-    align-items: center;
-  }
-  & .search__input {
-    display: flex;
-    align-items: center;
-    height: 120%;
-    & input {
-      width: 435px;
-      height: 80%;
-      font-size: 18px;
-      border: none;
-      outline: none;
-      background-color: transparent;
-    }
-  }
-  & .search__exit {
-    display: flex;
-    align-items: center;
-    transition: all 1s;
-    &:hover {
-      cursor: pointer;
-      & svg {
-        transform: rotate(90deg);
-      }
-    }
-  }
 }
 .time-picker {
   display: flex;
@@ -385,20 +226,5 @@ export default {
   &:hover {
     cursor: pointer;
   }
-}
-::-webkit-scrollbar {
-  width: 5.5px;
-  border-radius: 2px;
-}
-::-webkit-scrollbar-track {
-  background-color: rgba($color: #434359, $alpha: 0.1);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: rgba($color: #717189, $alpha: 0.1);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-button {
-  display: none;
 }
 </style>>
