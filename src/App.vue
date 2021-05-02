@@ -6,6 +6,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import Main from './components/Main.vue';
 import store from '@/store/index';
+import { loadYmap } from 'vue-yandex-maps';
 
 export default {
   name: 'App',
@@ -24,16 +25,12 @@ export default {
   },
   async mounted() {
     console.log('mounted App.vue');
+
+    // ymaps start
+    const settings = { lang: 'en_US' };
+    await loadYmap(settings);
+    // ymaps end
     await this.$store.dispatch('user/read');
-  },
-  created() {
-    const script = document.createElement('script');
-    script.id = 'ymaps';
-    script.src = 'https://api-maps.yandex.ru/2.1/?50a0ee88-f1ab-4eca-87ec-9bc01278d33c&lang=ru_RU';
-    document.head.append(script);
-  },
-  destroyed() {
-    document.head.querySelector('script#ymaps').remove();
   },
 };
 </script>

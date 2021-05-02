@@ -148,3 +148,45 @@ export function anime404() {
     rotateY: { value: '+=180', delay: 200 },
   });
 }
+
+export function init() {
+  // Создание экземпляра карты и его привязка к контейнеру с
+  // заданным id ("map").
+  const myMap = new ymaps.Map('map', {
+    // При инициализации карты обязательно нужно указать
+    // её центр и коэффициент масштабирования.
+    center: [55.76, 37.64], // Москва
+    zoom: 9,
+    controls: [
+      // 'zoomControl', // Ползунок масштаба
+      // 'rulerControl', // Линейка
+      // 'routeButtonControl', // Панель маршрутизации
+      // 'trafficControl', // Пробки
+      // 'typeSelector', // Переключатель слоев карты
+      // 'fullscreenControl', // Полноэкранный режим
+    ],
+    // behaviors: ['ruler']
+  }, {
+    // searchControlProvider: 'yandex#search'
+  });
+
+  // const myPlacemark = new ymaps.Placemark(myMap.getCenter());
+
+  // myMap.geoObjects.add(myPlacemark);
+}
+
+export function makeRequest(url, options = {}) {
+  const full_result = fetch(url, options).then(response => {
+    if (response.status === 200) {
+      return response.json();
+    }
+
+    return response.text().then(text => {
+      throw new Error(text);
+    });
+  });
+
+  return full_result.then(response => {
+    return response.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ');
+  });
+}

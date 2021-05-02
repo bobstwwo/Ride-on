@@ -13,6 +13,7 @@ import AddDriver from '@/views/AddDriver';
 import NotFound from '@/views/404';
 import Profile from '@/views/Profile';
 import Trips from '@/views/Trips';
+import Find from '@/views/Find';
 import firebase from '@/firebase';
 
 
@@ -74,6 +75,11 @@ let routes = [
         path: 'trips',
         name: 'trips',
         component: Trips
+      },
+      {
+        path: 'find',
+        name: 'find',
+        component: Find
       }
     ]
   },

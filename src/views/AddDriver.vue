@@ -157,6 +157,15 @@ export default {
       addTrip: 'driver/addTrip',
     }),
   },
+  // created() {
+  //   const script = document.createElement('script');
+  //   script.id = 'ymaps';
+  //   script.src = 'https://api-maps.yandex.ru/2.1/?50a0ee88-f1ab-4eca-87ec-9bc01278d33c&lang=ru_RU';
+  //   document.head.append(script);
+  // },
+  // destroyed() {
+  //   document.head.querySelector('script#ymaps').remove();
+  // },
 };
 </script>
 
