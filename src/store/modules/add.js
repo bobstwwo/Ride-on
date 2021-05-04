@@ -8,17 +8,36 @@ export default {
             finished: [],
         },
         firstTime: false,
+        role: '',
     },
     mutations: {
         addTrip(state, obj) {
             state.firstTime = false;
             state.trips.unfinished.push(obj);
+        },
+        changeTrip(state, obj) {
+            const index = obj.index;
+            const value = obj.value;
+            state.trips.unfinished[index] = value;
+        },
+        deleteTrip(state, index) {
+            state.trips.unfinished.splice(index, 1);
+        },
+        setRole(state, val) {
+            console.log("add.js - setRole:");
+            state.role = val;
+        },
+        destroy(state) {
+            state.trips.unfinished = [];
+            state.trips.finished = [];
+            state.firstTime = false;
+            state.role = '';
         }
     },
     actions: {
         async create(store) {
             const userId = await firebase.default.auth().currentUser.uid;
-            await firebase.database().ref('drivers/' + userId).set(store.state.trips);
+            await firebase.database().ref(store.state.role + '/' + userId).set(store.state.trips);
         },
 
         read(store) {
@@ -28,8 +47,8 @@ export default {
                     if (user) {
                         const userId = firebase.default.auth().currentUser.uid;
                         const dbRef = firebase.database().ref();
-
-                        dbRef.child("drivers").child(userId).get().then((data) => {
+                        console.log("add.js - read:");
+                        dbRef.child(store.state.role).child(userId).get().then((data) => {
                             if (data.val()) {
                                 store.state.trips = data.val()
                                 resolve();
@@ -39,7 +58,7 @@ export default {
                             }
                             store.dispatch('skeleton/setLoading', false, { root: true })
                         }).catch((error) => {
-                            console.error(error);
+                            console.log(error);
                             store.dispatch('skeleton/setLoading', false, { root: true })
                             reject();
                         });
@@ -56,7 +75,7 @@ export default {
                 store.dispatch('skeleton/setLoading', true, { root: true })
                 const userId = firebase.default.auth().currentUser.uid;
                 const dbRef = firebase.database().ref();
-                dbRef.child("drivers").child(userId).update(store.state.trips).then(() => {
+                dbRef.child(store.state.role).child(userId).update(store.state.trips).then(() => {
                     store.dispatch('skeleton/setLoading', false, { root: true })
                     resolve();
                 }).catch((error) => {
@@ -66,25 +85,18 @@ export default {
                 });
             });
         },
-
-        // async uploadFile(store, { file, path }) {
-        //     const filename = file.name;
-        //     const ext = filename.slice(filename.lastIndexOf('.'));
-        //     const userId = await firebase.default.auth().currentUser.uid;
-        //     firebase.storage().ref('files/' + userId + ext).put(file).then((response) => {
-        //         response.ref.getDownloadURL().then((downloadURL) => {
-        //             if (path === "profile-url") {
-        //                 store.state.user.profileImg = downloadURL;
-        //             } else if (path === "passport-url") {
-        //                 store.state.user.passport = downloadURL;
-        //             }
-        //             store.dispatch('update', store.state.user);
-        //         });
-        //     });
-        // },
+        changeTrip(store, obj) {
+            store.commit('changeTrip', obj)
+            store.dispatch('add/update', null, { root: true })
+        },
+        deleteTrip(store, index) {
+            store.commit("deleteTrip", index);
+            store.dispatch('add/update', null, { root: true })
+        }
     },
     getters: {
         trips: (state) => state.trips,
         firstTime: (state) => state.firstTime,
+        role: (state) => state.role,
     },
 };

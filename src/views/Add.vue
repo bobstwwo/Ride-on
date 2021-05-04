@@ -76,6 +76,7 @@ import DatePicker from 'vue2-datepicker';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 import 'vue2-datepicker/index.css';
+import store from '@/store/index';
 
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
@@ -103,8 +104,9 @@ export default {
     ...mapGetters({
       pointA: 'helper/pointA',
       pointB: 'helper/pointB',
-      trips: 'driver/trips',
-      firstTime: 'driver/firstTime',
+      trips: 'add/trips',
+      firstTime: 'add/firstTime',
+      // user: 'user/user',
     }),
   },
   methods: {
@@ -128,15 +130,17 @@ export default {
           pointB: this.pointB,
         };
         data.active = false;
-        this.read().then(() => {
+        store.dispatch('add/read', false, { root: true }).then(() => {
           if (this.firstTime) {
             //Если первый раз добавляет
             this.addTrip(data);
             this.create();
+            this.$router.push({ name: 'trips' });
           } else {
             //Если там уже что-то есть
             this.addTrip(data);
             this.update();
+            this.$router.push({ name: 'trips' });
           }
         });
       } else {
@@ -149,23 +153,13 @@ export default {
       }
     },
     ...mapActions({
-      read: 'driver/read',
-      create: 'driver/create',
-      update: 'driver/update',
+      create: 'add/create',
+      update: 'add/update',
     }),
     ...mapMutations({
-      addTrip: 'driver/addTrip',
+      addTrip: 'add/addTrip',
     }),
   },
-  // created() {
-  //   const script = document.createElement('script');
-  //   script.id = 'ymaps';
-  //   script.src = 'https://api-maps.yandex.ru/2.1/?50a0ee88-f1ab-4eca-87ec-9bc01278d33c&lang=ru_RU';
-  //   document.head.append(script);
-  // },
-  // destroyed() {
-  //   document.head.querySelector('script#ymaps').remove();
-  // },
 };
 </script>
 

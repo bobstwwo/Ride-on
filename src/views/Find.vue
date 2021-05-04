@@ -2,17 +2,18 @@
   <div id="map">
     <yandex-map :coords="coords" :zoom="10">
       <ymap-marker :coords="coords" marker-id="123" hint-content="some hint" />
-      <ymap-marker
+      <!-- <ymap-marker
         v-if="newCoors"
         :coords="newCoors"
         marker-id="122"
         hint-content="Москва, улица Новый Арбат, дом 24"
-      />
+      /> -->
     </yandex-map>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import { init, makeRequest, getPoint } from '@/main/common';
 
 export default {
@@ -36,13 +37,34 @@ export default {
       newCoors: null,
     };
   },
-  methods: {},
-  async mounted() {
-    let data = await makeRequest(
-      'https://geocode-maps.yandex.ru/1.x/?format=json&apikey=faba12d9-51bc-4c82-b94d-fe8451d5e50c&geocode=Москва, улица Новый Арбат, дом 24',
-    );
-    this.newCoors = data.reverse();
+  computed: {
+    ...mapGetters({
+      user: 'user/user',
+      myTrips: 'add/trips',
+    }),
   },
+  methods: {
+    ...mapActions({
+      myTripsRead: 'add/read',
+      readAll: 'helper/readAll',
+    }),
+  },
+  mounted() {
+    const role = localStorage.getItem('role');
+    if (role === 'driver') {
+      // Если это драйвер, то счивытваю все его поездки и все поездки всех попутчиков
+      this.myTripsRead();
+      this.readAll('passenger');
+    } else {
+      // Если это попутчик, то счивытваю все его поездки и все поездки всех водителей
+    }
+  },
+  // async mounted() {
+  //   let data = await makeRequest(
+  //     'https://geocode-maps.yandex.ru/1.x/?format=json&apikey=faba12d9-51bc-4c82-b94d-fe8451d5e50c&geocode=Москва, улица Новый Арбат, дом 24',
+  //   );
+  //   this.newCoors = data.reverse();
+  // },
 };
 </script>
 

@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import Registration from './modules/registration';
 import User from './modules/user';
 import Skeleton from './modules/skeleton';
-import Driver from './modules/driver';
+import Add from './modules/add';
 import Helper from './modules/helper';
 
 Vue.use(Vuex);
@@ -14,7 +14,7 @@ export default new Vuex.Store({
     registration: Registration,
     user: User,
     skeleton: Skeleton,
-    driver: Driver,
+    add: Add,
     helper: Helper,
   },
 });

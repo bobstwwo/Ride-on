@@ -3,34 +3,31 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import Main from './components/Main.vue';
-import store from '@/store/index';
 import { loadYmap } from 'vue-yandex-maps';
+import { read } from '@/main/utils/api';
+import store from '@/store/index';
 
 export default {
   name: 'App',
   components: {
     Main,
   },
-  methods: {
-    ...mapActions({
-      read: 'user/read',
-    }),
-  },
-  computed: {
-    ...mapGetters({
-      user: 'user/user',
-    }),
-  },
   async mounted() {
     console.log('mounted App.vue');
-
-    // ymaps start
     const settings = { lang: 'en_US' };
     await loadYmap(settings);
-    // ymaps end
-    await this.$store.dispatch('user/read');
+  },
+  beforeCreate() {
+    read()
+      .then((user) => {
+        console.log('setRole called from created App.vue');
+        store.commit('add/setRole', user.role.toLowerCase(), { root: true });
+        store.commit('user/setStateUser', user, { root: true });
+      })
+      .catch((er) => {
+        console.log(er);
+      });
   },
 };
 </script>

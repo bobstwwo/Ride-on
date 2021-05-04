@@ -125,6 +125,7 @@ export default {
       } else if (this.componentName === 'EmailPassword') {
         if (this.email !== '' && this.password !== '') {
           this.register();
+          localStorage.setItem('role', this.role.toLowerCase());
           this.$router.push({ name: 'adding' });
         } else {
           this.warningTitle = 'Email и пароль - обязательны!';

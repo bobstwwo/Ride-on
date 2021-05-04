@@ -18,6 +18,9 @@
 import Unfinished from '@/components/my-trips/Unfinished';
 import Finished from '@/components/my-trips/Finished';
 import { mapGetters, mapActions } from 'vuex';
+import { read } from '@/main/utils/api';
+import store from '@/store/index';
+
 export default {
   components: {
     Unfinished,
@@ -30,15 +33,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      trips: 'driver/trips',
+      trips: 'add/trips',
     }),
   },
   methods: {
     ...mapActions({
-      read: 'driver/read',
+      read: 'add/read',
     }),
   },
-  created() {
+  mounted() {
     this.read();
   },
 };
@@ -55,7 +58,6 @@ export default {
 .left {
   width: 30%;
   height: 200px;
-  //   background: violet;
   border-radius: 8px;
   padding: 20px;
   box-sizing: border-box;
@@ -71,7 +73,6 @@ export default {
   width: 70%;
   max-height: 74vh;
   overflow: auto;
-  //   background-color: var(--vgg-color);
   border-radius: 8px;
   margin-right: 70px;
   color: white;

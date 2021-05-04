@@ -9,13 +9,12 @@ import DriverReg from '@/views/DriverReg';
 import PassengerReg from '@/views/PassengerReg';
 import Login from '@/views/Login';
 import Account from '@/views/Account';
-import AddDriver from '@/views/AddDriver';
+import Add from '@/views/Add';
 import NotFound from '@/views/404';
 import Profile from '@/views/Profile';
 import Trips from '@/views/Trips';
 import Find from '@/views/Find';
 import firebase from '@/firebase';
-
 
 Vue.use(VueRouter);
 
@@ -64,7 +63,7 @@ let routes = [
       {
         path: '/',
         name: 'adding',
-        component: AddDriver
+        component: Add
       },
       {
         path: 'profile',
@@ -101,6 +100,9 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth && !isAuthenticated) {
     next('/login');
   } else {
+    if ((to.name === "adding" && from.name === "login") || from.name === "driver-reg" || from.name === "passenger-reg") {
+      console.log("Autorisations is done");
+    }
     next();
   }
   if ((to.name === 'login' || to.name === 'reg-list' || to.name === 'driver-reg') && isAuthenticated) {

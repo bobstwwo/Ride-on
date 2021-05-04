@@ -2,10 +2,9 @@
   <div class="finished">
     <div v-if="getCorrectData && getCorrectData.length > 0">
       <div v-for="(value, name, index) in getCorrectData" v-bind:key="index" class="unfil__el">
-        <p>pointA: {{ value.pointA }}</p>
-        <p>pointB: {{ value.pointB }}</p>
-        <p>departureTime: {{ value.departureTime }}</p>
-        <p>----------------------------------------------------------------------------</p>
+        <p>ОТКУДА: {{ value.pointA }}</p>
+        <p>КУДА: {{ value.pointB }}</p>
+        <p>ВРЕМЯ: {{ value.departureTime }}</p>
       </div>
     </div>
     <div v-else>
@@ -22,7 +21,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      trips: 'driver/trips',
+      trips: 'add/trips',
     }),
     getCorrectData() {
       return this.trips.finished;
@@ -31,5 +30,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.unfil__el {
+  background: var(--text-color);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  position: relative;
+}
 </style>

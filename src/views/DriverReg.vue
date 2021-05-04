@@ -132,6 +132,7 @@ export default {
         }
       } else if (this.componentName === 'Rules') {
         if (this.allChecked) {
+          localStorage.setItem('role', this.role.toLowerCase());
           this.$router.push({ name: 'adding' });
           this.showWarning = false;
         } else {
