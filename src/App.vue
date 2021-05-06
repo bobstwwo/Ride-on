@@ -7,6 +7,7 @@ import Main from './components/Main.vue';
 import { loadYmap } from 'vue-yandex-maps';
 import { read } from '@/main/utils/api';
 import store from '@/store/index';
+import { initPanel } from '@/main/common';
 
 export default {
   name: 'App',
@@ -17,6 +18,7 @@ export default {
     console.log('mounted App.vue');
     const settings = { lang: 'en_US' };
     await loadYmap(settings);
+    initPanel();
   },
   beforeCreate() {
     read()

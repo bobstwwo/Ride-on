@@ -13,7 +13,7 @@ import Add from '@/views/Add';
 import NotFound from '@/views/404';
 import Profile from '@/views/Profile';
 import Trips from '@/views/Trips';
-import Find from '@/views/Find';
+import Find from '@/views/Find2';
 import firebase from '@/firebase';
 
 Vue.use(VueRouter);
@@ -101,9 +101,13 @@ router.beforeEach((to, from, next) => {
     next('/login');
   } else {
     if ((to.name === "adding" && from.name === "login") || from.name === "driver-reg" || from.name === "passenger-reg") {
-      console.log("Autorisations is done");
+      setTimeout(() => {
+        console.log("Autorisations is done");
+        next();
+      }, 100);
+    } else {
+      next();
     }
-    next();
   }
   if ((to.name === 'login' || to.name === 'reg-list' || to.name === 'driver-reg') && isAuthenticated) {
     next('/dashboard');

@@ -36,9 +36,8 @@ export default {
                             } else {
                                 store.state.allTripsOFPassengers = arrTrips;
                             }
-                            resolve();
-                            console.log(store.state.allTripsOFPassengers);
                             store.dispatch('skeleton/setLoading', false, { root: true })
+                            resolve();
                         });
                     } else {
                         store.dispatch('skeleton/setLoading', false, { root: true })

@@ -58,7 +58,7 @@ export default {
                             }
                             store.dispatch('skeleton/setLoading', false, { root: true })
                         }).catch((error) => {
-                            console.log(error);
+                            console.log("----");
                             store.dispatch('skeleton/setLoading', false, { root: true })
                             reject();
                         });
