@@ -35,7 +35,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { animateShow, animateHide } from '@/main/common';
-import { read } from '@/main/utils/api';
+import { readUser } from '@/main/utils/api';
 import store from '@/store/index';
 
 export default {
@@ -57,10 +57,8 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then((data) => {
-          read().then((user) => {
-            store.commit('add/setRole', user.role.toLowerCase(), { root: true });
+          readUser().then((user) => {
             localStorage.setItem('role', user.role.toLowerCase());
-            this.setStateUser(user);
             this.setLoading(false);
             this.$router.push({ name: 'adding' });
           });

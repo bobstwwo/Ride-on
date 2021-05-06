@@ -91,7 +91,7 @@ export default {
     }),
     docText() {
       switch (this.user.passport) {
-        case ' ':
+        case '':
           return 'Документы не загружены, свяжитесь с модератором!';
           break;
         case 'true':

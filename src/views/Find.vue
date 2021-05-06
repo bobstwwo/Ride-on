@@ -1,62 +1,18 @@
 <template>
-  <div id="map">
-    <yandex-map ref="map" :controls="controls" :coords="coords" :zoom="10">
-      <ymap-marker
-        v-for="(item, index) in allTrips"
-        :key="index"
-        :coords="item.pointA"
-        :marker-id="index"
-        :hint-content="item.textA"
-        :icon="them"
-        :ref="'marker__' + index"
-        @click="markerClicked"
-        :hasBalloon="false"
-      />
-      <!-- :balloon="{ header: 'header', body: 'body', footer: 'footer' }" -->
-    </yandex-map>
-  </div>
+  <div id="map"></div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { init, makeRequest, getPoint, hintLayout } from '@/main/common';
+import { makeRequest } from '@/main/utils/api';
+import { initPanel, createMap } from '@/main/utils/yandex';
 
 export default {
   data() {
     return {
-      coords: [55.76, 37.64],
-      controls: [
-        'zoomControl', // Ползунок масштаба
-        // 'rulerControl', // Линейка
-        // 'routeButtonControl', // Панель маршрутизации
-        // 'trafficControl', // Пробки
-        // 'typeSelector', // Переключатель слоев карты
-        'fullscreenControl', // Полноэкранный режим
-      ],
-      myself: {
-        layout: 'default#image',
-        imageHref:
-          'https://www.flaticon.com/svg/vstatic/svg/1333/1333071.svg?token=exp=1620216995~hmac=5bf9ab0917246770ccc42d5df7b2e83c',
-        imageSize: [43, 43],
-        imageOffset: [0, 0],
-        content: 'content',
-        contentOffset: [35, 15],
-        contentLayout:
-          '<div style="background: red; width: 50px; color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>',
-      },
-      them: {
-        layout: 'default#image',
-        imageHref:
-          'https://www.flaticon.com/svg/vstatic/svg/1332/1332768.svg?token=exp=1620216965~hmac=23e5b91f5df547edbcde9d6500c68439',
-        imageSize: [43, 43],
-        imageOffset: [0, 0],
-        content: 'content',
-        contentOffset: [35, 15],
-        contentLayout:
-          '<div style="background: red; width: 50px; color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>',
-      },
-      newCoors: null,
       allTrips: [],
+      requestUrl:
+        'https://geocode-maps.yandex.ru/1.x/?apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2&format=json&geocode=',
     };
   },
   computed: {
@@ -67,52 +23,30 @@ export default {
       allTripsOFPassengers: 'helper/allTripsOFPassengers',
       dataFromBD: 'helper/dataFromBD', //Все поездки всех противоположных, с id
     }),
-    // ${this.coords}
-    balloonTemplate() {
-      console.log(this);
-      return `
-        <div class="ballonTmp">
-          ${this}
-        </div>
-      `;
-    },
-    thirdOffice() {
-      '<a href="https://yandex.ru/company/contacts/moscow/">Главный офис Яндекса</a>' +
-        '<p><img style="width: 190px;" src="img/office.jpeg"></p>' +
-        '<p>В офисе на улице Льва Толстого находится штаб-квартира Яндекса, он самый большой и по размерам, ' +
-        'и по численности сотрудников. Сейчас он занимает почти целый квартал между улицами Льва Толстого ' +
-        'и Тимура Фрунзе. Общая площадь всех зданий — более 50 тысяч квадратных метров.</p>';
-    },
   },
   methods: {
     ...mapActions({
-      myTripsRead: 'add/read',
       readAll: 'helper/readAll',
     }),
-    async getPoints() {
-      const requestUrl =
-        'https://geocode-maps.yandex.ru/1.x/?format=json&apikey=faba12d9-51bc-4c82-b94d-fe8451d5e50c&geocode=';
-      for (const user in this.dataFromBD) {
+    getPoints() {
+      for (const [key, user] of Object.entries(this.dataFromBD)) {
         let obj = {
-          id: user,
+          id: key,
         };
-        const trips = this.dataFromBD[user].unfinished;
+        const trips = user.unfinished;
         if (trips && trips.length > 0) {
-          trips.forEach(async (trip) => {
-            const point = await makeRequest(requestUrl + trip.pointA);
-            const point2 = await makeRequest(requestUrl + trip.pointB);
-
+          return trips.forEach((trip) => {
             obj.active = trip.active;
             obj.departureTime = trip.departureTime;
             obj.peopleNum = trip.peopleNum;
 
-            obj.pointA = point.reverse();
-            obj.textA = trip.pointA;
-            obj.pointB = point2.reverse();
-            obj.textB = trip.pointB;
+            obj.pointA = trip.pointA;
+            obj.textA = trip.textA;
+            obj.pointB = trip.pointB;
+            obj.textB = trip.textB;
             this.allTrips.push(obj);
             obj = {
-              id: user,
+              id: key,
             };
           });
         } else {
@@ -120,66 +54,71 @@ export default {
         }
       }
     },
-    markerClicked(e) {
-      // const map = this.$refs.map;
-      // // console.log();
-      // ymaps.ready(['Panel']).then(function () {
-      //   let panel = new ymaps.Panel();
-      //   map.controls.add(panel, {
-      //     float: 'left',
-      //   });
-      //   // Получим ссылку на геообъект, по которому кликнул пользователь.
-      //   let target = e.originalEvent.target;
-      //   // Зададим контент боковой панели.
-      //   panel.setContent('HELLO');
-      //   // Переместим центр карты по координатам метки с учётом заданных отступов.
-      //   map.panTo(target.geometry.getCoordinates(), { useMapMargin: true });
-      // });
-      // let marker = 'marker__' + index;
-      // console.log(this.$refs[marker]);
-    },
   },
-  mounted() {
-    ymaps.ready(() => {
-      console.log(12);
-    });
+  async mounted() {
     const role = localStorage.getItem('role');
     if (role === 'driver') {
       // Если это драйвер, то счивытваю все его поездки и все поездки всех попутчиков
-      this.myTripsRead();
-      this.readAll('passenger').then(() => {
-        this.getPoints();
-      });
+      this.readAll('passenger')
+        .then(() => {
+          this.getPoints();
+          createMap(this.allTrips, this.user);
+        })
+        .catch((err) => {
+          console.log(err);
+          createMap(null);
+        });
     } else {
       // Если это попутчик, то счивытваю все его поездки и все поездки всех водителей
+      console.log('hi passenger');
     }
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #map {
-  width: 99%;
+  // width: 950px;
+  max-width: 950px;
   height: 80vh;
   position: relative;
   overflow: hidden;
+  & > div::-webkit-scrollbar {
+    width: 5.5px !important;
+    border-radius: 2px !important;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: transparent !important;
+    border-radius: 5px !important;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba($color: grey, $alpha: 0.1) !important;
+    border-radius: 5px !important;
+  }
+  ::-webkit-scrollbar-button {
+    display: none !important;
+  }
 }
 
 .ymap-container {
   height: 99%;
-  width: 950px;
+  // width: 950px;
+  max-width: 950px;
   position: absolute;
   top: 0;
   left: 0;
 }
 @media (max-width: 1280px) {
   .ymap-container {
-    width: 100%;
+    max-width: 100%;
+  }
+  #map {
+    max-width: 100%;
   }
 }
 .customControl {
   display: none;
-  background-color: #fff;
+  background-color: red;
   padding: 5px;
   border-radius: 3px;
   max-width: 250px;
@@ -201,12 +140,49 @@ export default {
 .content {
   padding: 5px;
   max-height: 250px;
-  overflow: auto;
+  overflow-y: auto;
 }
 
-a,
-a:visited {
-  color: #04b;
-  text-decoration: none !important;
+.ballon {
+  width: 300px;
+  height: 150px;
+  // background-color: aliceblue;
+  font-family: monospace;
+  overflow-y: auto;
+}
+
+.ballon__title {
+  display: flex;
+  justify-content: center;
+}
+
+.ballon__title span {
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ballon__from,
+.ballon__to,
+.ballon__when {
+  margin-bottom: 5px;
+  padding-left: 10px;
+}
+
+.flex-block {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.df__el {
+  text-transform: uppercase;
+  background-color: green;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 14px;
+  color: white;
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>

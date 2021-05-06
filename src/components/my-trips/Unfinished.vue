@@ -2,8 +2,8 @@
   <div class="unfinished">
     <div v-if="getCorrectData && getCorrectData.length > 0">
       <div v-for="(value, index) in getCorrectData" v-bind:key="index" class="unfil__el">
-        <p>ОТКУДА: {{ value.pointA }}</p>
-        <p>КУДА: {{ value.pointB }}</p>
+        <p>ОТКУДА: {{ value.textA }}</p>
+        <p>КУДА: {{ value.textB }}</p>
         <p>ВРЕМЯ: <input id="time" :value="value.departureTime" type="text" /></p>
         <div class="comment">
           <textarea
@@ -85,8 +85,9 @@ export default {
     save(e, { index, value }) {
       const time = document.getElementById('time').value;
       const comment = document.getElementById('comment').value;
+      console.log(time);
       let addedVal = value;
-      addedVal.time = time;
+      addedVal.departureTime = time;
       addedVal.comment = comment;
       let obj = {
         index: index,

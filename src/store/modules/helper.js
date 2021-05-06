@@ -22,26 +22,32 @@ export default {
                 firebase.auth().onAuthStateChanged((user) => {
                     if (user) {
                         const dbRef = firebase.database().ref(role);
+
                         dbRef.on('value', (snapshot) => {
                             const data = snapshot.val();
-                            store.state.dataFromBD = data;
-                            let arrTrips = [];
-                            Object.values(data).forEach(element => {
-                                element.unfinished.forEach(trip => {
-                                    arrTrips.push(trip);
+                            if (data) {
+                                store.state.dataFromBD = data;
+                                let arrTrips = [];
+                                Object.values(data).forEach(element => {
+                                    element.unfinished.forEach(trip => {
+                                        arrTrips.push(trip);
+                                    });
                                 });
-                            });
-                            if (role === "driver") {
-                                store.state.allTripsOFDrivers = arrTrips;
+                                if (role === "driver") {
+                                    store.state.allTripsOFDrivers = arrTrips;
+                                } else {
+                                    store.state.allTripsOFPassengers = arrTrips;
+                                }
+                                store.dispatch('skeleton/setLoading', false, { root: true })
+                                resolve();
                             } else {
-                                store.state.allTripsOFPassengers = arrTrips;
+                                store.dispatch('skeleton/setLoading', false, { root: true })
+                                reject("There is no trips");
                             }
-                            store.dispatch('skeleton/setLoading', false, { root: true })
-                            resolve();
                         });
                     } else {
                         store.dispatch('skeleton/setLoading', false, { root: true })
-                        reject();
+                        reject("User not autorised");
                     }
                 })
             });

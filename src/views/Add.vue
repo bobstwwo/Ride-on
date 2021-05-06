@@ -76,9 +76,9 @@ import DatePicker from 'vue2-datepicker';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 import 'vue2-datepicker/index.css';
-import store from '@/store/index';
 
 import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { makeRequest, readUser } from '@/main/utils/api';
 
 export default {
   components: {
@@ -92,6 +92,8 @@ export default {
       open: false,
       peopleNum: 2,
       showWarn: false,
+      requestUrl:
+        'https://geocode-maps.yandex.ru/1.x/?apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2&format=json&geocode=',
     };
   },
   computed: {
@@ -106,7 +108,7 @@ export default {
       pointB: 'helper/pointB',
       trips: 'add/trips',
       firstTime: 'add/firstTime',
-      // user: 'user/user',
+      user: 'user/user',
     }),
   },
   methods: {
@@ -121,28 +123,30 @@ export default {
     decrease() {
       if (this.peopleNum > 1) this.peopleNum--;
     },
-    onSubmit() {
+    async onSubmit() {
       if (this.departureTime && this.pointA && this.pointB) {
+        const point = await makeRequest(this.requestUrl + this.pointA);
+        const point2 = await makeRequest(this.requestUrl + this.pointB);
         const data = {
           departureTime: this.departureTime,
           peopleNum: this.peopleNum,
-          pointA: this.pointA,
-          pointB: this.pointB,
+          textA: this.pointA,
+          textB: this.pointB,
+          pointA: point.reverse(),
+          pointB: point2.reverse(),
         };
         data.active = false;
-        store.dispatch('add/read', false, { root: true }).then(() => {
-          if (this.firstTime) {
-            //Если первый раз добавляет
-            this.addTrip(data);
-            this.create();
-            this.$router.push({ name: 'trips' });
-          } else {
-            //Если там уже что-то есть
-            this.addTrip(data);
-            this.update();
-            this.$router.push({ name: 'trips' });
-          }
-        });
+        if (this.firstTime) {
+          //Если первый раз добавляет
+          this.addTrip(data);
+          this.create(this.user.role.toLowerCase());
+          this.$router.push({ name: 'trips' });
+        } else {
+          //Если там уже что-то есть
+          this.addTrip(data);
+          this.update();
+          this.$router.push({ name: 'trips' });
+        }
       } else {
         Swal.fire({
           title: 'Ошибка!',
@@ -159,6 +163,9 @@ export default {
     ...mapMutations({
       addTrip: 'add/addTrip',
     }),
+  },
+  beforeCreate() {
+    readUser();
   },
 };
 </script>

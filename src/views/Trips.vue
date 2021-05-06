@@ -18,7 +18,6 @@
 import Unfinished from '@/components/my-trips/Unfinished';
 import Finished from '@/components/my-trips/Finished';
 import { mapGetters, mapActions } from 'vuex';
-import { read } from '@/main/utils/api';
 import store from '@/store/index';
 
 export default {
@@ -38,11 +37,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      read: 'add/read',
+      // read: 'add/read',
     }),
   },
   mounted() {
-    this.read();
+    // this.read();
   },
 };
 </script>

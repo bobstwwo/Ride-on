@@ -5,9 +5,9 @@
 <script>
 import Main from './components/Main.vue';
 import { loadYmap } from 'vue-yandex-maps';
-import { read } from '@/main/utils/api';
+import { readUser } from '@/main/utils/api';
+import { animatedLine } from '@/main/utils/yandex';
 import store from '@/store/index';
-import { initPanel } from '@/main/common';
 
 export default {
   name: 'App',
@@ -15,21 +15,17 @@ export default {
     Main,
   },
   async mounted() {
-    console.log('mounted App.vue');
     const settings = { lang: 'en_US' };
     await loadYmap(settings);
-    initPanel();
+    animatedLine();
   },
   beforeCreate() {
-    read()
-      .then((user) => {
-        console.log('setRole called from created App.vue');
-        store.commit('add/setRole', user.role.toLowerCase(), { root: true });
-        store.commit('user/setStateUser', user, { root: true });
-      })
-      .catch((er) => {
-        console.log(er);
-      });
+    try {
+      readUser();
+    } catch (err) {
+      console.log(12);
+      console.log(err);
+    }
   },
 };
 </script>

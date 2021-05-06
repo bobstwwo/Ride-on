@@ -26,37 +26,6 @@ export default {
       await firebase.database().ref('users/' + userId).set(store.state.user);
     },
 
-    // async read(store) {
-    //   return new Promise((resolve, reject) => {
-    //     firebase.auth().onAuthStateChanged((user) => {
-    //       if (user) {
-    //         const userId = firebase.default.auth().currentUser.uid;
-    //         const dbRef = firebase.database().ref();
-
-    //         dbRef.child("users").child(userId).get().then((data) => {
-    //           if (data.val()) {
-    //             if (data.val().role === "Driver") {
-    //               store.state.user = new Driver(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().passport, data.val().profileImg);
-    //             } else if (data.val().role === "Passenger") {
-    //               store.state.user = new Passenger(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().profileImg);
-    //             }
-    //             store.dispatch('skeleton/setLoading', false, { root: true })
-    //             resolve(store.state.user);
-    //           }
-    //         }).catch((error) => {
-    //           console.error(error);
-    //           store.dispatch('skeleton/setLoading', false, { root: true })
-    //           reject();
-    //         });
-    //       } else {
-    //         store.dispatch('skeleton/setLoading', false, { root: true })
-    //         reject();
-    //       }
-    //     });
-    //   });
-    // },
-
-
     async update(store, user) {
       const userId = await firebase.default.auth().currentUser.uid;
       const dbRef = firebase.database().ref();

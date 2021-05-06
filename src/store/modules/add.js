@@ -8,7 +8,6 @@ export default {
             finished: [],
         },
         firstTime: false,
-        role: '',
     },
     mutations: {
         addTrip(state, obj) {
@@ -18,64 +17,36 @@ export default {
         changeTrip(state, obj) {
             const index = obj.index;
             const value = obj.value;
+            console.log(value);
             state.trips.unfinished[index] = value;
         },
         deleteTrip(state, index) {
             state.trips.unfinished.splice(index, 1);
-        },
-        setRole(state, val) {
-            console.log("add.js - setRole:");
-            state.role = val;
         },
         destroy(state) {
             state.trips.unfinished = [];
             state.trips.finished = [];
             state.firstTime = false;
             state.role = '';
+        },
+        setStateTrip(state, trips) {
+            state.trips = trips;
+        },
+        setFirstTime(state, val) {
+            state.firstTime = val;
         }
     },
     actions: {
-        async create(store) {
+        async create(store, role) {
             const userId = await firebase.default.auth().currentUser.uid;
-            await firebase.database().ref(store.state.role + '/' + userId).set(store.state.trips);
+            await firebase.database().ref(role + '/' + userId).set(store.state.trips);
         },
-
-        read(store) {
-            return new Promise((resolve, reject) => {
-                // store.dispatch('skeleton/setLoading', true, { root: true })
-                firebase.auth().onAuthStateChanged((user) => {
-                    if (user) {
-                        const userId = firebase.default.auth().currentUser.uid;
-                        const dbRef = firebase.database().ref();
-                        console.log("add.js - read:");
-                        dbRef.child(store.state.role).child(userId).get().then((data) => {
-                            if (data.val()) {
-                                store.state.trips = data.val()
-                                resolve();
-                            } else {
-                                store.state.firstTime = true;
-                                resolve();
-                            }
-                            store.dispatch('skeleton/setLoading', false, { root: true })
-                        }).catch((error) => {
-                            console.log("----");
-                            store.dispatch('skeleton/setLoading', false, { root: true })
-                            reject();
-                        });
-                    } else {
-                        store.dispatch('skeleton/setLoading', false, { root: true })
-                        reject();
-                    }
-                });
-            });
-        },
-
         update(store) {
             return new Promise((resolve, reject) => {
                 store.dispatch('skeleton/setLoading', true, { root: true })
                 const userId = firebase.default.auth().currentUser.uid;
                 const dbRef = firebase.database().ref();
-                dbRef.child(store.state.role).child(userId).update(store.state.trips).then(() => {
+                dbRef.child(localStorage.getItem('role')).child(userId).update(store.state.trips).then(() => {
                     store.dispatch('skeleton/setLoading', false, { root: true })
                     resolve();
                 }).catch((error) => {
