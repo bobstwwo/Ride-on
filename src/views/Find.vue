@@ -71,7 +71,15 @@ export default {
         });
     } else {
       // Если это попутчик, то счивытваю все его поездки и все поездки всех водителей
-      console.log('hi passenger');
+      this.readAll('driver')
+        .then(() => {
+          this.getPoints();
+          createMap(this.allTrips, this.myTrips.unfinished);
+        })
+        .catch((err) => {
+          console.log(err);
+          createMap(null); //Строим пустую карту
+        });
     }
   },
 };
