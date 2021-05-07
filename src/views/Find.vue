@@ -56,6 +56,7 @@ export default {
     },
   },
   async mounted() {
+    console.log(this.myTrips);
     const role = localStorage.getItem('role');
     if (role === 'driver') {
       // Если это драйвер, то счивытваю все его поездки и все поездки всех попутчиков

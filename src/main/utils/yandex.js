@@ -1,15 +1,16 @@
 import { makeRequest } from '@/main/utils/api';
 const axios = require('axios').default;
 export function createMap(trips, user) {
-    ymaps.ready().then(function () {
+    ymaps.ready(['AnimatedLine']).then(function () {
         var map = new ymaps.Map("map", {
             center: [55.76, 37.64],
-            zoom: 10,
+            zoom: 12,
             controls: [
                 'zoomControl',
                 'fullscreenControl',
             ]
         });;
+        addBtn(map);
         if (trips) {
             trips.forEach(trip => {
                 let counter = 0;
@@ -26,48 +27,33 @@ export function createMap(trips, user) {
                     '</div>', {
 
                     build: function () {
-                        localStorage.setItem("id", this._data.properties._data.id);
+                        localStorage.setItem("pointA", this._data.properties._data.pointA);
+                        localStorage.setItem("pointB", this._data.properties._data.pointB);
                         BalloonContentLayout.superclass.build.call(this);
                         $('#route').bind('click', this.onRouteClick);
                         $('#count').html(counter);
                     },
 
                     clear: function () {
-                        localStorage.removeItem("id", this._data.properties._data.id);
+                        localStorage.removeItem("pointA");
+                        localStorage.removeItem("pointB");
                         $('#route').unbind('click', this.onRouteClick);
                         BalloonContentLayout.superclass.clear.call(this);
                     },
 
                     onRouteClick: async function () {
-                        // ymaps.route([
-                        //     'Москва, улица Крылатские холмы',
-                        //     {
-                        //         point: 'Москва, метро Молодежная',
-                        //         // метро "Молодежная" - транзитная точка
-                        //         // (проезжать через эту точку, но не останавливаться в ней).
-                        //         type: 'viaPoint'
-                        //     },
-                        //     [55.731272, 37.447198], // метро "Кунцевская".
-                        //     'Москва, метро Пионерская'
-                        // ]).then(function (route) {
-                        //     console.log(route);
-                        //     map.geoObjects.add(route);
-                        // });
-                        axios.post('https://api.routing.yandex.net/v2/route?waypoints=55.734494627139355,37.68191922355621|55.733441295701056,37.59027350593535&apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2').
-                            then(function (response) {
-                                console.log(response);
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            })
+                        let a = localStorage.pointA;
+                        let b = localStorage.pointB;
+                        drawROute(map, a, b);
                     }
                 });
 
                 var placemark = new ymaps.Placemark(trip.pointA, {
-                    id: trip.id,
                     name: user.name,
                     from: trip.textA,
                     to: trip.textB,
+                    pointA: trip.pointA,
+                    pointB: trip.pointB,
                     time: trip.departureTime
                 }, {
                     balloonContentLayout: BalloonContentLayout
@@ -81,8 +67,62 @@ export function createMap(trips, user) {
     });
 }
 
+const routes = [];
+function drawROute(map, a, b) {
+    const platform = new H.service.Platform({ apikey: '8uiDorc0NR3v7ZkHby8-V4Q3IV2VsYUyoDJDIBEeXYI' });
+    const routingService = platform.getRoutingService();
+    routingService.calculateRoute(
+        {
+            mode: 'fastest;car;traffic:enabled',
+            waypoint0: a,
+            waypoint1: b,
+            representation: 'display',
+        },
+        (data) => {
+            const shape = data.response.route[0].shape;
+            let arr = [];
+            shape.forEach(point => {
+                const el = point.split(',');
+                arr.push(el);
+            });
+            var firstAnimatedLine = new ymaps.AnimatedLine(arr, {}, {
+                strokeColor: "#ED4543",
+                strokeWidth: 5,
+                animationTime: 3000
+            });
+            map.geoObjects.add(firstAnimatedLine);
+            firstAnimatedLine.animate()
+            routes.push(firstAnimatedLine);
+        },
+        (err) => {
+            console.log(err);
+        },
+    );
+}
 
-
+function addBtn(map) {
+    const deleteBtn =
+        new ymaps.control.Button({
+            data: {
+                content: "<b id='deleteBtn'>Удалить маршруты</b>",
+            },
+            options: {
+                maxWidth: [28, 150, 178]
+            }
+        });
+    deleteBtn.events
+        .add(
+            'select',
+            function () {
+                routes.forEach(tr => {
+                    tr.reset();
+                });
+            }
+        )
+    map.controls.add(deleteBtn, {
+        float: "left"
+    });
+}
 
 export function animatedLine() {
     ymaps.modules.define('AnimatedLine', [
@@ -184,3 +224,4 @@ export function animatedLine() {
         provide(AnimatedLine);
     });
 }
+

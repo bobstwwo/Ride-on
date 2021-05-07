@@ -12,6 +12,7 @@ window.$ = JQuery
 window.anime = anime
 
 const settings = {
+  // apiKey: '1aef85e8-6fde-49f7-ae9a-209497902ad2',
   apiKey: '1aef85e8-6fde-49f7-ae9a-209497902ad2',
   lang: 'ru_RU',
   coordorder: 'latlong',

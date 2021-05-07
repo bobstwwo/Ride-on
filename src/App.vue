@@ -23,7 +23,6 @@ export default {
     try {
       readUser();
     } catch (err) {
-      console.log(12);
       console.log(err);
     }
   },
