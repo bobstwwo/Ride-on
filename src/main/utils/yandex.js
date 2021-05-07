@@ -1,8 +1,15 @@
-import { makeRequest } from '@/main/utils/api';
-const axios = require('axios').default;
-export function createMap(trips, user) {
+const theirMark = 'https://firebasestorage.googleapis.com/v0/b/rideon-82115.appspot.com/o/img%2Fme.svg?alt=media&token=f087b517-0d8e-40a3-a66b-7a3d6f1b8e59';
+const meMark = 'https://firebasestorage.googleapis.com/v0/b/rideon-82115.appspot.com/o/img%2Fthem.svg?alt=media&token=6c919187-e883-44da-a0c1-018fb03f8d99';
+const theirColor = "#ED4543";
+const meColor = 'blue';
+const routes = [];
+const bMarks = [];
+
+let map;
+
+export function createMap(trips, mytrips) {
     ymaps.ready(['AnimatedLine']).then(function () {
-        var map = new ymaps.Map("map", {
+        const yandexMap = new ymaps.Map("map", {
             center: [55.76, 37.64],
             zoom: 12,
             controls: [
@@ -10,65 +17,123 @@ export function createMap(trips, user) {
                 'fullscreenControl',
             ]
         });;
-        addBtn(map);
+        map = yandexMap;
+        // Добавляю всех apposite пользователей
         if (trips) {
             trips.forEach(trip => {
-                let counter = 0;
-                let BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
-                    '<div class="ballon">' +
-                    '<div class="ballon__title"><span>$[properties.name]</span></div>' +
-                    '<div class="ballon__from">ОТКУДА: $[properties.from]</div>' +
-                    '<div div class= "ballon__to" > КУДА: $[properties.to]</div>' +
-                    '<div class="ballon__when">КОГДА: $[properties.time]</div>' +
-                    '<div class="flex-block">' +
-                    '<div class="df__el">Связаться</div>' +
-                    '<div class="df__el" id="route">Построить маршрут</div>' +
-                    '</div>' +
-                    '</div>', {
-
-                    build: function () {
-                        localStorage.setItem("pointA", this._data.properties._data.pointA);
-                        localStorage.setItem("pointB", this._data.properties._data.pointB);
-                        BalloonContentLayout.superclass.build.call(this);
-                        $('#route').bind('click', this.onRouteClick);
-                        $('#count').html(counter);
-                    },
-
-                    clear: function () {
-                        localStorage.removeItem("pointA");
-                        localStorage.removeItem("pointB");
-                        $('#route').unbind('click', this.onRouteClick);
-                        BalloonContentLayout.superclass.clear.call(this);
-                    },
-
-                    onRouteClick: async function () {
-                        let a = localStorage.pointA;
-                        let b = localStorage.pointB;
-                        drawROute(map, a, b);
-                    }
-                });
-
-                var placemark = new ymaps.Placemark(trip.pointA, {
-                    name: user.name,
-                    from: trip.textA,
-                    to: trip.textB,
-                    pointA: trip.pointA,
-                    pointB: trip.pointB,
-                    time: trip.departureTime
-                }, {
-                    balloonContentLayout: BalloonContentLayout
-                });
-
-                map.geoObjects.add(placemark);
+                showMark(trip, theirMark, theirColor);
             });
         } else {
             console.log("Trips no available");
         }
+
+        // Добавляю checklist со совими поездками
+        const listItems = [];
+        mytrips.forEach(async trip => {
+            let option = new ymaps.control.ListBoxItem('От: ' + trip.textA);
+            await listItems.push(option);
+        });
+        const myListBox = new ymaps.control.ListBox({
+            data: {
+                content: 'Мои поездки'
+            },
+            items: listItems
+        });
+        const placemarks = new Array();
+        for (let i = 0; i < mytrips.length; i++) {
+            myListBox.get(i)
+                .events.add('click', function (e) {
+                    const item = e.get('target');
+                    const isSelected = item.state._data.selected;
+                    if (isSelected === undefined || !isSelected) {
+                        // рисую
+                        const placemark = showMark(mytrips[i], meMark, meColor);
+                        placemarks[i] = placemark;
+                    } else {
+                        // удаляю из карты
+                        const placemark = placemarks[i];
+                        map.geoObjects.remove(placemark);
+                    }
+                });
+        }
+        map.controls.add(myListBox);
+
+        // Показываю кнопку удалить маршруты
+        addBtn();
     });
 }
 
-const routes = [];
-function drawROute(map, a, b) {
+function showMark(trip, markUrl, color) {
+    let mainTmp;
+    const tmp = '<div class="ballon">' +
+        '<div class="ballon__title"><span>$[properties.name]</span></div>' +
+        '<div class="ballon__from">ОТКУДА: $[properties.from]</div>' +
+        '<div div class= "ballon__to" > КУДА: $[properties.to]</div>' +
+        '<div class="ballon__when">КОГДА: $[properties.time]</div>' +
+        '<div class="flex-block">' +
+        '<div class="df__el">Связаться</div>' +
+        '<div class="df__el" id="route">Построить маршрут</div>' +
+        '</div>' +
+        '</div>';
+    const tmpMe = '<div div class="ballon" > ' +
+        '<div class="ballon__title"><span>$[properties.name]</span></div>' +
+        '<div class="ballon__from">ОТКУДА: $[properties.from]</div>' +
+        '<div div class= "ballon__to" > КУДА: $[properties.to]</div>' +
+        '<div class="ballon__when">КОГДА: $[properties.time]</div>' +
+        '<div class="flex-block">' +
+        '<div class="df__el" id="route">Построить маршрут</div>' +
+        '</div>' +
+        '</div>';
+    if (color === meColor) {
+        mainTmp = tmpMe;
+    } else {
+        mainTmp = tmp;
+    }
+    let BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+        mainTmp, {
+
+        build: function () {
+            localStorage.setItem("pointA", this._data.properties._data.pointA);
+            localStorage.setItem("pointB", this._data.properties._data.pointB);
+            BalloonContentLayout.superclass.build.call(this);
+            $('#route').bind('click', this.onRouteClick);
+        },
+
+        clear: function () {
+            localStorage.removeItem("pointA");
+            localStorage.removeItem("pointB");
+            $('#route').unbind('click', this.onRouteClick);
+            BalloonContentLayout.superclass.clear.call(this);
+        },
+
+        onRouteClick: function () {
+            let a = localStorage.pointA;
+            let b = localStorage.pointB;
+            drawROute(a, b, color);
+        }
+    });
+
+    const placemark = new ymaps.Placemark(trip.pointA, {
+        name: trip.name,
+        from: trip.textA,
+        to: trip.textB,
+        pointA: trip.pointA,
+        pointB: trip.pointB,
+        time: trip.departureTime
+    }, {
+        balloonContentLayout: BalloonContentLayout,
+        iconLayout: 'default#image',
+        iconImageHref: markUrl,
+        iconImageSize: [43, 42],
+        iconImageOffset: [0, 0]
+    });
+
+    map.geoObjects.add(placemark);
+    return placemark;
+}
+
+
+function drawROute(a, b, strokeColor) {
     const platform = new H.service.Platform({ apikey: '8uiDorc0NR3v7ZkHby8-V4Q3IV2VsYUyoDJDIBEeXYI' });
     const routingService = platform.getRoutingService();
     routingService.calculateRoute(
@@ -86,13 +151,18 @@ function drawROute(map, a, b) {
                 arr.push(el);
             });
             var firstAnimatedLine = new ymaps.AnimatedLine(arr, {}, {
-                strokeColor: "#ED4543",
-                strokeWidth: 5,
-                animationTime: 3000
+                strokeColor: strokeColor,
+                strokeWidth: 7,
+                animationTime: 100
             });
             map.geoObjects.add(firstAnimatedLine);
             firstAnimatedLine.animate()
             routes.push(firstAnimatedLine);
+            if (strokeColor === theirColor) {
+                bMarks.push(drawPointB(arr[arr.length - 1], theirMark));
+            } else {
+                bMarks.push(drawPointB(arr[arr.length - 1], meMark));
+            }
         },
         (err) => {
             console.log(err);
@@ -100,11 +170,23 @@ function drawROute(map, a, b) {
     );
 }
 
-function addBtn(map) {
+function drawPointB(b, markUrl) {
+    const placemark = new ymaps.Placemark(b, {
+    }, {
+        iconLayout: 'default#image',
+        iconImageHref: markUrl,
+        iconImageSize: [43, 42],
+        iconImageOffset: [0, 0]
+    });
+    map.geoObjects.add(placemark);
+    return placemark;
+}
+
+function addBtn() {
     const deleteBtn =
         new ymaps.control.Button({
             data: {
-                content: "<b id='deleteBtn'>Удалить маршруты</b>",
+                content: "Удалить маршруты",
             },
             options: {
                 maxWidth: [28, 150, 178]
@@ -112,11 +194,16 @@ function addBtn(map) {
         });
     deleteBtn.events
         .add(
-            'select',
+            'click',
             function () {
-                routes.forEach(tr => {
-                    tr.reset();
-                });
+                if (routes.length > 0) {
+                    routes.forEach(tr => {
+                        tr.reset();
+                    });
+                    bMarks.forEach(bm => {
+                        map.geoObjects.remove(bm);
+                    })
+                }
             }
         )
     map.controls.add(deleteBtn, {
@@ -136,12 +223,13 @@ export function animatedLine() {
         /**
          * Создает экземпляр анимированной линии.
          * @class AnimatedLine. Представляет собой геообъект с геометрией geometry.LineString.
-         * @param {Boolean} [options.animationTime = 4000] Длительность анимации.
+         * @param {Boolean} [options.animationTime = 100] Длительность анимации.
          **/
         function AnimatedLine(geometry, properties, options) {
             AnimatedLine.superclass.constructor.call(this, geometry, properties, options);
-            this._loopTime = 50;
-            this._animationTime = this.options.get('animationTime', 4000);
+            this._loopTime = 10;
+            this._animationTime = this.options.get('animationTime', 100);
+            // console.log(this._animationTime);
             // Вычислим длину переданной линии.
             var distance = 0;
             var previousElem = geometry[0];
@@ -224,4 +312,6 @@ export function animatedLine() {
         provide(AnimatedLine);
     });
 }
+
+
 

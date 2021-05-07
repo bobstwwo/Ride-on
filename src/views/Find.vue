@@ -44,6 +44,7 @@ export default {
             obj.textA = trip.textA;
             obj.pointB = trip.pointB;
             obj.textB = trip.textB;
+            obj.name = trip.name;
             this.allTrips.push(obj);
             obj = {
               id: key,
@@ -56,18 +57,17 @@ export default {
     },
   },
   async mounted() {
-    console.log(this.myTrips);
     const role = localStorage.getItem('role');
     if (role === 'driver') {
       // Если это драйвер, то счивытваю все его поездки и все поездки всех попутчиков
       this.readAll('passenger')
         .then(() => {
           this.getPoints();
-          createMap(this.allTrips, this.user);
+          createMap(this.allTrips, this.myTrips.unfinished);
         })
         .catch((err) => {
           console.log(err);
-          createMap(null);
+          createMap(null); //Строим пустую карту
         });
     } else {
       // Если это попутчик, то счивытваю все его поездки и все поездки всех водителей
