@@ -45,7 +45,11 @@
               </svg>
               Найти поездку
             </div>
-            <div class="sidebar-link">
+            <div
+              @click="$router.push({ name: 'chat' })"
+              :class="{ 'is-active': $router.currentRoute.name === 'chat' }"
+              class="sidebar-link"
+            >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -198,7 +202,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import firebase from '@/firebase';
+import { firebase } from '@/firebase';
 import { mainAccount } from '@/main/common';
 export default {
   data() {

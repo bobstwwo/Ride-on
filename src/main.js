@@ -1,4 +1,4 @@
-import firebase from './firebase'
+import { firebase } from './firebase'
 import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
@@ -12,7 +12,6 @@ window.$ = JQuery
 window.anime = anime
 
 const settings = {
-  // apiKey: '1aef85e8-6fde-49f7-ae9a-209497902ad2',
   apiKey: '1aef85e8-6fde-49f7-ae9a-209497902ad2',
   lang: 'ru_RU',
   coordorder: 'latlong',
@@ -29,6 +28,7 @@ Vue.use(Antd);
 Vue.config.productionTip = false;
 
 let app;
+
 
 firebase.auth().onAuthStateChanged((user) => {
   if (!app) {

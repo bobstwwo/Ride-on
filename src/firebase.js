@@ -1,9 +1,9 @@
-import firebase from 'firebase/app';
-import 'firebase/auth'
+import app from 'firebase/app'
+import 'firebase/firestore'
 import 'firebase/database'
-import 'firebase/storage';
+import 'firebase/storage'
 
-var firebaseConfig = {
+const config = {
     apiKey: 'AIzaSyDdSsrixYFAXGs6MjzWhaSn9XjnG7qRZYI',
     authDomain: 'rideon-82115.firebaseapp.com',
     projectId: 'rideon-82115',
@@ -13,8 +13,20 @@ var firebaseConfig = {
     databaseURL: 'https://rideon-82115-default-rtdb.firebaseio.com/',
 };
 
-// Initialize Firebase
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-firebase.database();
+app.initializeApp(config)
 
-export default firebase;
+
+
+export const firebase = app
+export const db = app.firestore()
+export const storageRef = app.storage().ref()
+
+export const usersRef = db.collection('users')
+export const roomsRef = db.collection('chatRooms')
+export const messagesRef = roomId => roomsRef.doc(roomId).collection('messages')
+
+export const filesRef = storageRef.child('files')
+
+export const dbTimestamp = firebase.firestore.FieldValue.serverTimestamp()
+export const deleteDbField = firebase.firestore.FieldValue.delete()
+

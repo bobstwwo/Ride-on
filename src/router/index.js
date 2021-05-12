@@ -14,7 +14,8 @@ import NotFound from '@/views/404';
 import Profile from '@/views/Profile';
 import Trips from '@/views/Trips';
 import Find from '@/views/Find';
-import firebase from '@/firebase';
+import Chat from '@/views/Chat';
+import { firebase } from '@/firebase';
 
 Vue.use(VueRouter);
 
@@ -79,6 +80,10 @@ let routes = [
         path: 'find',
         name: 'find',
         component: Find
+      }, {
+        path: 'chat',
+        name: 'chat',
+        component: Chat,
       }
     ]
   },

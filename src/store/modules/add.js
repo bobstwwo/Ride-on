@@ -1,4 +1,4 @@
-import firebase from '@/firebase';
+import { firebase } from '@/firebase';
 
 export default {
     namespaced: true,
@@ -38,13 +38,13 @@ export default {
     },
     actions: {
         async create(store, role) {
-            const userId = await firebase.default.auth().currentUser.uid;
+            const userId = await firebase.auth().currentUser.uid;
             await firebase.database().ref(role + '/' + userId).set(store.state.trips);
         },
         update(store) {
             return new Promise((resolve, reject) => {
                 store.dispatch('skeleton/setLoading', true, { root: true })
-                const userId = firebase.default.auth().currentUser.uid;
+                const userId = firebase.auth().currentUser.uid;
                 const dbRef = firebase.database().ref();
                 dbRef.child(localStorage.getItem('role')).child(userId).update(store.state.trips).then(() => {
                     store.dispatch('skeleton/setLoading', false, { root: true })

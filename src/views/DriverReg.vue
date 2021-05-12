@@ -47,9 +47,10 @@
 </template>
 
 <script>
-import firebase from '@/firebase';
+import { firebase } from '@/firebase';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import { animateShow, animateHide, animateSteps } from '@/main/common';
+import { addNewUserChat } from '@/main/utils/chat/api';
 import myAudio from '@/components/general/Audio';
 import InfoForm from '@/components/registration/InfoForm';
 import PhoneNumber from '@/components/registration/PhoneNumber';
@@ -165,6 +166,7 @@ export default {
           this.create()
             .then(() => {
               console.log('Created new item successfully!');
+              addNewUserChat(this.name + ' ' + this.surname);
             })
             .catch((e) => {
               console.log(e);

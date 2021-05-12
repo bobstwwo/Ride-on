@@ -1,11 +1,11 @@
-import firebase from '@/firebase';
+import { firebase } from '@/firebase';
 import Driver from '@/main/utils/Driver';
 import Passenger from '@/main/utils/Passenger';
 import store from '@/store/index';
 
 export function readUser() {
     return new Promise((resolve, reject) => {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.default.auth().onAuthStateChanged((user) => {
             if (user) {
                 const userId = firebase.default.auth().currentUser.uid;
                 const dbRef = firebase.database().ref();
@@ -14,9 +14,9 @@ export function readUser() {
                     if (data.val()) {
                         let userDB = '';
                         if (data.val().role === "Driver") {
-                            userDB = new Driver(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().passport, data.val().profileImg);
+                            userDB = new Driver(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().passport, data.val().profileImg, userId);
                         } else if (data.val().role === "Passenger") {
-                            userDB = new Passenger(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().profileImg);
+                            userDB = new Passenger(data.val().role, data.val().name, data.val().surname, data.val().secondName, data.val().phone, data.val().email, data.val().birthday, data.val().profileImg, userId);
                         }
                         readTrips(data.val().role.toLowerCase());
                         store.commit('user/setStateUser', userDB, { root: true });

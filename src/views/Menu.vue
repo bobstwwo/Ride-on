@@ -20,7 +20,7 @@
         </li>
         <li>
           <p class="item-idx">05</p>
-          <p class="item-title"><span>Регистация для пассажиров</span></p>
+          <p class="item-title"><span>Регистрация для пассажиров</span></p>
         </li>
       </ul>
     </div>

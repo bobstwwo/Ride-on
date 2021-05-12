@@ -1,3 +1,4 @@
+import { createRoomChat } from '@/main/utils/chat/api';
 const theirMark = 'https://firebasestorage.googleapis.com/v0/b/rideon-82115.appspot.com/o/img%2Fme.svg?alt=media&token=f087b517-0d8e-40a3-a66b-7a3d6f1b8e59';
 const meMark = 'https://firebasestorage.googleapis.com/v0/b/rideon-82115.appspot.com/o/img%2Fthem.svg?alt=media&token=6c919187-e883-44da-a0c1-018fb03f8d99';
 const theirColor = "#ED4543";
@@ -71,7 +72,7 @@ function showMark(trip, markUrl, color) {
         '<div div class= "ballon__to" > КУДА: $[properties.to]</div>' +
         '<div class="ballon__when">КОГДА: $[properties.time]</div>' +
         '<div class="flex-block">' +
-        '<div class="df__el">Связаться</div>' +
+        '<div class="df__el" id="contact">Связаться</div>' +
         '<div class="df__el" id="route">Построить маршрут</div>' +
         '</div>' +
         '</div>';
@@ -95,14 +96,18 @@ function showMark(trip, markUrl, color) {
         build: function () {
             localStorage.setItem("pointA", this._data.properties._data.pointA);
             localStorage.setItem("pointB", this._data.properties._data.pointB);
+            localStorage.setItem("id", this._data.properties._data.id);
             BalloonContentLayout.superclass.build.call(this);
             $('#route').bind('click', this.onRouteClick);
+            $('#contact').bind('click', this.onContactClick);
         },
 
         clear: function () {
             localStorage.removeItem("pointA");
             localStorage.removeItem("pointB");
+            localStorage.removeItem("id");
             $('#route').unbind('click', this.onRouteClick);
+            $('#contact').unbind('click', this.onContactClick);
             BalloonContentLayout.superclass.clear.call(this);
         },
 
@@ -110,6 +115,9 @@ function showMark(trip, markUrl, color) {
             let a = localStorage.pointA;
             let b = localStorage.pointB;
             drawROute(a, b, color);
+        },
+        onContactClick: function () {
+            createRoomChat(localStorage.id);
         }
     });
 
@@ -119,7 +127,8 @@ function showMark(trip, markUrl, color) {
         to: trip.textB,
         pointA: trip.pointA,
         pointB: trip.pointB,
-        time: trip.departureTime
+        time: trip.departureTime,
+        id: trip.id,
     }, {
         balloonContentLayout: BalloonContentLayout,
         iconLayout: 'default#image',

@@ -1,5 +1,5 @@
 // import User from '@/main/utils/User.js';
-import firebase from '@/firebase';
+import { firebase } from '@/firebase';
 import Driver from '@/main/utils/Driver';
 import Passenger from '@/main/utils/Passenger';
 
@@ -23,6 +23,7 @@ export default {
   actions: {
     async create(store) {
       const userId = await firebase.default.auth().currentUser.uid;
+      console.log(store.state.user);
       await firebase.database().ref('users/' + userId).set(store.state.user);
     },
 

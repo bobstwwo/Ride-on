@@ -1,3 +1,5 @@
+import user from "../../store/modules/user";
+
 class Passenger {
     constructor(role, name, surname, secondName, phone, email, birthday, profileImg) {
         this.role = role;
