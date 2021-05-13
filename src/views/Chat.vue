@@ -2,39 +2,44 @@
   <div class="chat">
     <div class="left">
       <div class="left-top"><span>Мои сообщения</span></div>
-      <div class="room">
-        <div class="room__image">
-          <img
-            src="https://dyl80ryjxr1ke.cloudfront.net/external_assets/hero_examples/hair_beach_v391182663/original.jpeg"
-            alt=""
-          />
-        </div>
-        <div class="room__body">
-          <div class="room__body-el">
-            <div class="surname">Myself</div>
-            <div class="time">Today, 20:58</div>
+      <div v-if="bool">
+        <div v-for="(value, name, index) in chatRooms" v-bind:key="index" class="room">
+          <div class="room__image">
+            <img
+              src="https://dyl80ryjxr1ke.cloudfront.net/external_assets/hero_examples/hair_beach_v391182663/original.jpeg"
+              alt=""
+            />
           </div>
-          <div class="room__body-el">
-            <div class="last-msg">Hi</div>
-            <div class="action">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path id="vac-icon-dropdown-room" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path>
-                <!---->
-              </svg>
+          <div class="room__body">
+            <div class="room__body-el">
+              <div class="surname">{{ getSurname(value) }}</div>
+              <div class="time">{{ getLastUpdate(value) }}</div>
+            </div>
+            <div class="room__body-el">
+              <div class="last-msg">{{ getLastMsg(value) }}</div>
+              <div class="action">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  version="1.1"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    id="vac-icon-dropdown-room"
+                    d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+                  ></path>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <loader v-else></loader>
     </div>
     <div class="right">
-      <div class="right-top">
+      <div v-if="bool" class="right-top">
         <div class="df">
           <div class="topel">
             <img
@@ -60,7 +65,7 @@
           </svg>
         </div>
       </div>
-      <div class="messages">
+      <div v-if="bool" class="messages">
         <div class="from-me">
           <div class="msg-text">This is my first text</div>
           <div class="msg-time">11/05/21 22:22</div>
@@ -70,7 +75,7 @@
           <div class="msg-time">11/05/21 23:22</div>
         </div>
       </div>
-      <div class="typing">
+      <div v-if="bool" class="typing">
         <div class="df">
           <div class="voice margin-r">
             <svg
@@ -137,36 +142,76 @@
           </div>
         </div>
       </div>
+      <div class="loade-right">
+        <loader v-if="!bool"></loader>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { firebase } from '@/firebase';
-import { fetchRooms } from '@/main/utils/chat/api';
+import { fetchRoomsChat, fetchUsernames } from '@/main/utils/chat/api';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { formatDate } from '@/main/common';
+import Loader from '@/components/chat/Loader';
 
 export default {
-  components: {},
-
+  components: {
+    Loader,
+  },
   data() {
     return {
       rooms: [],
       messages: [],
+      bool: false,
     };
   },
   computed: {
     ...mapGetters({
       user: 'user/user',
+      chatRooms: 'chat/chatRooms',
+      userNames: 'chat/userNames',
     }),
   },
-  mounted() {
-    fetchRooms();
+  methods: {
+    getSurname(value) {
+      let result = '';
+      value.data.users.forEach((userID) => {
+        this.userNames.forEach((obj) => {
+          if (obj.userId === userID) {
+            result = obj.username;
+          }
+        });
+      });
+      return result;
+    },
+    getLastUpdate(value) {
+      const time = value.data.lastUpdate;
+      return formatDate(new Date(time));
+    },
+    getLastMsg(value) {
+      const msg = value.data.messages;
+      if (msg.length > 0) {
+        return msg[msg.length - 1];
+      } else {
+        return 'There is no messages yet';
+      }
+    },
   },
+  async created() {
+    await fetchRoomsChat();
+    await fetchUsernames(this.chatRooms);
+    this.bool = true;
+  },
+  mounted() {},
 };
 </script>
 
 <style lang="scss" scoped>
+.loade-right {
+  transform: translate(0, 125%);
+}
 .room {
   padding: 6px;
   margin: 8px;
@@ -265,6 +310,10 @@ svg {
 }
 .settings {
   margin-right: 10px;
+}
+.surname {
+  font-weight: 700;
+  font-size: 17.2px;
 }
 .surname-top {
   margin-left: 10px;

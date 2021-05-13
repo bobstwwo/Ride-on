@@ -6,6 +6,7 @@ import User from './modules/user';
 import Skeleton from './modules/skeleton';
 import Add from './modules/add';
 import Helper from './modules/helper';
+import Chat from './modules/chat';
 
 Vue.use(Vuex);
 
@@ -16,5 +17,6 @@ export default new Vuex.Store({
     skeleton: Skeleton,
     add: Add,
     helper: Helper,
+    chat: Chat,
   },
 });

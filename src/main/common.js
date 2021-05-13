@@ -150,3 +150,24 @@ export function anime404() {
 }
 
 
+export function makeLoader() {
+  $(window).load(function () {
+    $(".loader__inner").fadeOut();
+    $(".loader").delay(400).fadeOut("slow");
+  });
+}
+
+export function formatDate(date) {
+  let year = date.getFullYear(),
+    month = date.getMonth() + 1,
+    day = date.getDate(),
+    hour = date.getHours(),
+    minute = date.getMinutes(),
+    second = date.getSeconds(),
+    hourFormatted = hour % 12 || 12,
+    minuteFormatted = minute < 10 ? "0" + minute : minute,
+    morning = hour < 12 ? "am" : "pm";
+
+  return day + "/" + month + "/" + year + " " + hourFormatted + ":" +
+    minuteFormatted + morning;
+}
