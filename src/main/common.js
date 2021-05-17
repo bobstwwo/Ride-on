@@ -171,3 +171,12 @@ export function formatDate(date) {
   return day + "/" + month + "/" + year + " " + hourFormatted + ":" +
     minuteFormatted + morning;
 }
+
+export function scrollSmoothToBottom(id) {
+  var div = document.getElementById(id);
+  if (div) {
+    $('#' + id).animate({
+      scrollTop: div.scrollHeight - div.clientHeight
+    }, 500);
+  }
+}

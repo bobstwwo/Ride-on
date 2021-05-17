@@ -153,6 +153,7 @@ function drawROute(a, b, strokeColor) {
             representation: 'display',
         },
         (data) => {
+            console.log(data);
             const shape = data.response.route[0].shape;
             let arr = [];
             shape.forEach(point => {

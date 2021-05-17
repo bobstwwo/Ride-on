@@ -4,6 +4,7 @@ export default {
     state: {
         chatRooms: [],
         userNames: [],
+        myID: null,
     },
     mutations: {
         setRooms(state, chatRooms) {
@@ -11,6 +12,9 @@ export default {
         },
         setUserNames(state, userNames) {
             state.userNames = userNames;
+        },
+        setMyID(state, id) {
+            state.myID = id;
         }
     },
     actions: {
@@ -18,5 +22,6 @@ export default {
     getters: {
         chatRooms: (state) => state.chatRooms,
         userNames: (state) => state.userNames,
+        myID: (state) => state.myID,
     },
 };

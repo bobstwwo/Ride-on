@@ -17,7 +17,6 @@ export default {
         changeTrip(state, obj) {
             const index = obj.index;
             const value = obj.value;
-            console.log(value);
             state.trips.unfinished[index] = value;
         },
         deleteTrip(state, index) {

@@ -4,7 +4,7 @@
       <div v-for="(value, index) in getCorrectData" v-bind:key="index" class="unfil__el">
         <p>ОТКУДА: {{ value.textA }}</p>
         <p>КУДА: {{ value.textB }}</p>
-        <p>ВРЕМЯ: <input id="time" :value="value.departureTime" type="text" /></p>
+        <p>ВРЕМЯ: <input id="time" @change="onTime" :value="value.departureTime" type="text" /></p>
         <div class="comment">
           <textarea
             :value="value.comment ? value.comment : ''"
@@ -13,6 +13,7 @@
             data-autoresize
             cols="30"
             rows="10"
+            @change="onInput"
           ></textarea>
           <div @click="save($event, { index, value })" class="comment__button">Сохранить</div>
         </div>
@@ -67,7 +68,10 @@
 import { mapGetters, mapActions } from 'vuex';
 export default {
   data() {
-    return {};
+    return {
+      comment: '',
+      time: '',
+    };
   },
   computed: {
     ...mapGetters({
@@ -85,15 +89,24 @@ export default {
     save(e, { index, value }) {
       const time = document.getElementById('time').value;
       const comment = document.getElementById('comment').value;
-      console.log(time);
       let addedVal = value;
-      addedVal.departureTime = time;
-      addedVal.comment = comment;
+      if (this.time) {
+        addedVal.departureTime = this.time;
+      }
+      if (this.comment) {
+        addedVal.comment = this.comment;
+      }
       let obj = {
         index: index,
         value: addedVal,
       };
       this.changeTrip(obj);
+    },
+    onInput(e) {
+      this.comment = e.target.value;
+    },
+    onTime(e) {
+      this.time = e.target.value;
     },
   },
 };

@@ -2,7 +2,12 @@ import { db, firebase, roomsRef, admin, messagesRef, usersRef, filesRef, deleteD
 import axios from 'axios';
 import store from '@/store/index';
 
-
+export async function sendMessage(roomID, senderID, text) {
+    await roomsRef.doc(roomID).update({
+        messages: firebase.firestore.FieldValue.arrayUnion({ senderID: senderID, text: text, time: Date.now() }),
+        lastUpdate: Date.now()
+    });
+}
 
 export async function addNewUserChat(name) {
     const userId = await firebase.default.auth().currentUser.uid;
@@ -32,6 +37,7 @@ export async function createRoomChat(oppositeUserId) {
 
 export async function fetchRoomsChat() {
     const userId = await firebase.default.auth().currentUser.uid;
+    await store.commit('chat/setMyID', userId, { root: true });
     const user = await db.collection('users').doc(userId).get();
     const roomIds = user.data().chatRooms;
     const snapshot = await roomsRef.get();
