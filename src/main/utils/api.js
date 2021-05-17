@@ -63,7 +63,18 @@ export async function makeRequest(url, options = {}) {
     const response = await fetch(url, options)
     if (response.status === 200) {
         const data = await response.json()
+        console.log(data);
         return data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ')
+    } else {
+        return response.text()
+    }
+}
+
+export async function makeOverviewRequest(url, options = {}) {
+    const response = await fetch(url, options)
+    if (response.status === 200) {
+        const data = await response.json()
+        return data.response.GeoObjectCollection.featureMember[0].GeoObject.description;
     } else {
         return response.text()
     }

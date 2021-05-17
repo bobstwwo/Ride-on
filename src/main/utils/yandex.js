@@ -1,10 +1,17 @@
 import { createRoomChat } from '@/main/utils/chat/api';
+import { makeOverviewRequest } from '@/main/utils/api';
+import { drawPolygon } from '@/assets/files/data.js';
+import store from '@/store/index';
 const theirMark = 'https://firebasestorage.googleapis.com/v0/b/rideon-82115.appspot.com/o/img%2Fme.svg?alt=media&token=f087b517-0d8e-40a3-a66b-7a3d6f1b8e59';
 const meMark = 'https://firebasestorage.googleapis.com/v0/b/rideon-82115.appspot.com/o/img%2Fthem.svg?alt=media&token=6c919187-e883-44da-a0c1-018fb03f8d99';
 const theirColor = "#ED4543";
 const meColor = 'blue';
 const routes = [];
 const bMarks = [];
+const requestUrl = 'https://geocode-maps.yandex.ru/1.x/?apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2&kind=district&format=json&geocode=';
+
+const allMarks = [];
+const sortedMarks = [[], [], [], [], [], [], [], [], [], [], [], []];
 
 let map;
 
@@ -12,13 +19,16 @@ export function createMap(trips, mytrips) {
     ymaps.ready(['AnimatedLine']).then(function () {
         const yandexMap = new ymaps.Map("map", {
             center: [55.76, 37.64],
-            zoom: 12,
+            zoom: 8,
             controls: [
                 'zoomControl',
                 'fullscreenControl',
             ]
         });;
         map = yandexMap;
+
+
+
         // Добавляю всех apposite пользователей
         if (trips) {
             trips.forEach(trip => {
@@ -59,12 +69,121 @@ export function createMap(trips, mytrips) {
         }
         map.controls.add(myListBox);
 
+        // Добавляю checklist со всеми административными округами
+        addAdminAreas();
+
         // Показываю кнопку удалить маршруты
         addBtn();
     });
 }
 
-function showMark(trip, markUrl, color) {
+function addAdminAreas() {
+    // const myPolygon = require('@/assets/files/data.js');
+    const listAreas = [];
+    listAreas.push(new ymaps.control.ListBoxItem('Восточный (ВАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Новомосковский (НМАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Северо-Западный (СЗАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Юго-Восточный (ЮВАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Западный (ЗАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Северный (САО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Троицкий (ТАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Юго-Западный (ЮЗАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Зеленоградский (ЗелАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Северо-Восточный (СВАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Центральный (ЦАО)'));
+    listAreas.push(new ymaps.control.ListBoxItem('Южный (ЮАО)'));
+
+    const myListBox = new ymaps.control.ListBox({
+        data: {
+            content: 'Административный округ'
+        },
+        items: listAreas
+    });
+
+    let counter = 0;
+    let activePolygons = [];
+    for (let i = 0; i < 12; i++) {
+        myListBox.get(i)
+            .events.add('click', function (e) {
+                const item = e.get('target');
+                const isSelected = item.state._data.selected;
+                const name = item.data._data.content;
+                if (isSelected === undefined || !isSelected) {
+                    // рисую только нужную
+                    if (counter == 0) {
+                        allMarks.forEach(markEl => {
+                            map.geoObjects.remove(markEl);
+                        });
+                    }
+                    sortedMarks[i].forEach(markEl => {
+                        map.geoObjects.add(markEl);
+                    });
+                    counter++;
+
+                    switch (i) {
+                        case 0:
+                            activePolygons[i] = drawPolygon(i, map, "#a7a6e2", "Восточный административный округ");
+                            break;
+                        case 1:
+                            activePolygons[i] = drawPolygon(i, map, "#f6b9b5", "Новомосковский административный округ");
+                            break;
+                        case 2:
+                            activePolygons[i] = drawPolygon(i, map, "#acd2cd", "Северо-Западный административный округ");
+                            break;
+                        case 3:
+                            activePolygons[i] = drawPolygon(i, map, "#dfc0df", "Юго-Восточный административный округ");
+                            break;
+                        case 4:
+                            activePolygons[i] = drawPolygon(i, map, "#aad39f", "Западный административный округ");
+                            break;
+                        case 5:
+                            activePolygons[i] = drawPolygon(i, map, "#bca5c5", "Северный административный округ");
+                            break;
+                        case 6:
+                            activePolygons[i] = drawPolygon(i, map, "#eeeb93", "Троицкий административный округ");
+                            break;
+                        case 7:
+                            activePolygons[i] = drawPolygon(i, map, "#abaae3", "Юго-Западный административный округ");
+                            break;
+                        case 8:
+                            activePolygons[i] = drawPolygon(i, map, "#edda92", "Зеленоградский административный округ");
+                            break;
+                        case 9:
+                            activePolygons[i] = drawPolygon(i, map, "#c0cbec", "Северо-Восточный административный округ");
+                            break;
+                        case 10:
+                            activePolygons[i] = drawPolygon(i, map, "#fdaa63", "Центральный административный округ");
+                            break;
+                        case 11:
+                            activePolygons[i] = drawPolygon(i, map, "#b7d1a4", "Южный административный округ");
+                            break;
+
+                    }
+                } else {
+                    // удаляю из карты
+                    sortedMarks[i].forEach(markEl => {
+                        map.geoObjects.remove(markEl);
+                    });
+                    counter--;
+
+                    if (counter === 0) {
+                        allMarks.forEach(markEl => {
+                            map.geoObjects.add(markEl);
+                        });
+                    }
+
+                    activePolygons[i].forEach(el => {
+                        map.geoObjects.remove(el);
+                    });
+                }
+            });
+    }
+
+
+    map.controls.add(myListBox);
+}
+
+async function showMark(trip, markUrl, color) {
     let mainTmp;
     const tmp = '<div class="ballon">' +
         '<div class="ballon__title"><span>$[properties.name]</span></div>' +
@@ -137,10 +256,21 @@ function showMark(trip, markUrl, color) {
         iconImageOffset: [0, 0]
     });
 
+
     map.geoObjects.add(placemark);
+
+    let endofUrl = trip.pointA[1] + "," + trip.pointA[0];
+
+    const result = await makeOverviewRequest(requestUrl + endofUrl);
+    const ind = checkConsistence(result);
+
+    if (ind !== -1) {
+        sortedMarks[ind].push(placemark);
+    }
+    allMarks.push(placemark);
+
     return placemark;
 }
-
 
 function drawROute(a, b, strokeColor) {
     const platform = new H.service.Platform({ apikey: '8uiDorc0NR3v7ZkHby8-V4Q3IV2VsYUyoDJDIBEeXYI' });
@@ -153,7 +283,6 @@ function drawROute(a, b, strokeColor) {
             representation: 'display',
         },
         (data) => {
-            console.log(data);
             const shape = data.response.route[0].shape;
             let arr = [];
             shape.forEach(point => {
@@ -173,6 +302,21 @@ function drawROute(a, b, strokeColor) {
             } else {
                 bMarks.push(drawPointB(arr[arr.length - 1], meMark));
             }
+        },
+        (err) => {
+            console.log(err);
+        },
+    );
+    routingService.calculateRoute(
+        {
+            mode: 'fastest;car;traffic:enabled',
+            waypoint0: a,
+            waypoint1: b,
+            representation: 'overview',
+        },
+        (data) => {
+            console.log(data.response.route[0].summary);
+            store.commit('helper/setRouteInfo', data.response.route[0].summary, { root: true });
         },
         (err) => {
             console.log(err);
@@ -213,6 +357,7 @@ function addBtn() {
                     bMarks.forEach(bm => {
                         map.geoObjects.remove(bm);
                     })
+                    store.commit('helper/setRouteInfo', null, { root: true });
                 }
             }
         )
@@ -323,5 +468,20 @@ export function animatedLine() {
     });
 }
 
+function checkConsistence(result) {
+    const arr = ["Восточный административный округ", "Новомосковский административный округ", "Северо-Западный административный округ", "Юго-Восточный административный округ", "Западный административный округ", "Северный административный округ", "Троицкий административный округ", "Юго-Западный административный округ", "Зеленоградский административный округ", "Северо-Восточный административный округ", "Центральный административный округ", "Южный административный округ"];
+
+    const resultArr = result.split(',');
+
+    let index = -1;
+
+    resultArr.forEach(el => {
+        if (arr.includes(el.trim())) {
+            index = arr.indexOf(el.trim());
+        }
+    });
+
+    return index;
+}
 
 

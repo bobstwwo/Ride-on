@@ -5,6 +5,7 @@ export default {
         pointA: '',
         pointB: '',
         dataFromBD: '',
+        routeInfo: null,
     },
     mutations: {
         setA(state, value) {
@@ -12,6 +13,9 @@ export default {
         },
         setB(state, value) {
             state.pointB = value;
+        },
+        setRouteInfo(state, info) {
+            state.routeInfo = info;
         }
     },
     actions: {
@@ -43,5 +47,6 @@ export default {
         pointA: (state) => state.pointA,
         pointB: (state) => state.pointB,
         dataFromBD: (state) => state.dataFromBD,
+        routeInfo: (state) => state.routeInfo,
     },
 };

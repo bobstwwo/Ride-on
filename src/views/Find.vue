@@ -1,13 +1,19 @@
 <template>
-  <div id="map"></div>
+  <div id="map">
+    <information v-if="routeInfo" :distance="getDistance" :travelTime="getTime"></information>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { makeRequest } from '@/main/utils/api';
 import { initPanel, createMap } from '@/main/utils/yandex';
+import Information from '@/components/yandex/Information';
 
 export default {
+  components: {
+    Information,
+  },
   data() {
     return {
       allTrips: [],
@@ -22,7 +28,16 @@ export default {
       allTripsOFDrivers: 'helper/allTripsOFDrivers',
       allTripsOFPassengers: 'helper/allTripsOFPassengers',
       dataFromBD: 'helper/dataFromBD', //Все поездки всех противоположных, с id
+      routeInfo: 'helper/routeInfo',
     }),
+    getDistance() {
+      const distance = this.routeInfo.distance;
+      return Math.round((distance / 1000) * 100) / 100 + ' км.';
+    },
+    getTime() {
+      const time = this.routeInfo.travelTime;
+      return Math.round((time / 60) * 100) / 100 + ' мин.';
+    },
   },
   methods: {
     ...mapActions({

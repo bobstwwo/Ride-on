@@ -132,7 +132,7 @@ export default {
           peopleNum: this.peopleNum,
           textA: this.pointA,
           textB: this.pointB,
-          pointA: point.reverse(), 
+          pointA: point.reverse(),
           pointB: point2.reverse(),
           name: this.user.name,
         };
