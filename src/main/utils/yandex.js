@@ -8,7 +8,7 @@ const theirColor = "#ED4543";
 const meColor = 'blue';
 const routes = [];
 const bMarks = [];
-const requestUrl = 'https://geocode-maps.yandex.ru/1.x/?apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2&kind=district&format=json&geocode=';
+const requestUrl = 'https://geocode-maps.yandex.ru/1.x/?apikey=e44fe465-761b-495e-9e8c-b91042469060&kind=district&format=json&geocode=';
 
 const allMarks = [];
 const sortedMarks = [[], [], [], [], [], [], [], [], [], [], [], []];
@@ -58,8 +58,9 @@ export function createMap(trips, mytrips) {
                     const isSelected = item.state._data.selected;
                     if (isSelected === undefined || !isSelected) {
                         // рисую
-                        const placemark = showMark(mytrips[i], meMark, meColor);
-                        placemarks[i] = placemark;
+                        showMark(mytrips[i], meMark, meColor, true).then(placemark => {
+                            placemarks[i] = placemark;
+                        });
                     } else {
                         // удаляю из карты
                         const placemark = placemarks[i];
@@ -183,7 +184,7 @@ function addAdminAreas() {
     map.controls.add(myListBox);
 }
 
-async function showMark(trip, markUrl, color) {
+async function showMark(trip, markUrl, color, me) {
     let mainTmp;
     const tmp = '<div class="ballon">' +
         '<div class="ballon__title"><span>$[properties.name]</span></div>' +
@@ -259,15 +260,17 @@ async function showMark(trip, markUrl, color) {
 
     map.geoObjects.add(placemark);
 
-    let endofUrl = trip.pointA[1] + "," + trip.pointA[0];
+    if (!me) {
+        let endofUrl = trip.pointA[1] + "," + trip.pointA[0];
 
-    const result = await makeOverviewRequest(requestUrl + endofUrl);
-    const ind = checkConsistence(result);
+        const result = await makeOverviewRequest(requestUrl + endofUrl);
+        const ind = checkConsistence(result);
 
-    if (ind !== -1) {
-        sortedMarks[ind].push(placemark);
+        if (ind !== -1) {
+            sortedMarks[ind].push(placemark);
+        }
+        allMarks.push(placemark);
     }
-    allMarks.push(placemark);
 
     return placemark;
 }
@@ -315,7 +318,7 @@ function drawROute(a, b, strokeColor) {
             representation: 'overview',
         },
         (data) => {
-            console.log(data.response.route[0].summary);
+            // console.log(data.response.route[0].summary);
             store.commit('helper/setRouteInfo', data.response.route[0].summary, { root: true });
         },
         (err) => {

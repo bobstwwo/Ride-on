@@ -63,7 +63,7 @@ export async function makeRequest(url, options = {}) {
     const response = await fetch(url, options)
     if (response.status === 200) {
         const data = await response.json()
-        console.log(data);
+        console.log(data.response.GeoObjectCollection.featureMember[0].GeoObject.description);
         return data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ')
     } else {
         return response.text()

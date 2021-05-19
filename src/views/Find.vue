@@ -18,7 +18,7 @@ export default {
     return {
       allTrips: [],
       requestUrl:
-        'https://geocode-maps.yandex.ru/1.x/?apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2&format=json&geocode=',
+        'https://geocode-maps.yandex.ru/1.x/?apikey=e44fe465-761b-495e-9e8c-b91042469060&format=json&geocode=',
     };
   },
   computed: {
@@ -43,32 +43,34 @@ export default {
     ...mapActions({
       readAll: 'helper/readAll',
     }),
-    getPoints() {
-      for (const [key, user] of Object.entries(this.dataFromBD)) {
+    getPoints(data) {
+      const result = [];
+      for (let user_bd of Object.entries(data)) {
         let obj = {
-          id: key,
+          id: user_bd[0],
         };
-        const trips = user.unfinished;
+        const trips = user_bd[1].unfinished;
         if (trips && trips.length > 0) {
-          return trips.forEach((trip) => {
+          trips.forEach((trip) => {
             obj.active = trip.active;
             obj.departureTime = trip.departureTime;
             obj.peopleNum = trip.peopleNum;
-
             obj.pointA = trip.pointA;
             obj.textA = trip.textA;
             obj.pointB = trip.pointB;
             obj.textB = trip.textB;
             obj.name = trip.name;
-            this.allTrips.push(obj);
+            result.push(obj);
             obj = {
-              id: key,
+              // id: key,
+              id: user_bd[0],
             };
           });
         } else {
           continue;
         }
       }
+      return result;
     },
   },
   async mounted() {
@@ -76,9 +78,10 @@ export default {
     if (role === 'driver') {
       // Если это драйвер, то счивытваю все его поездки и все поездки всех попутчиков
       this.readAll('passenger')
-        .then(() => {
-          this.getPoints();
-          createMap(this.allTrips, this.myTrips.unfinished);
+        .then((data) => {
+          const myObj = data;
+          const dataToBeSend = this.getPoints(myObj);
+          createMap(dataToBeSend, this.myTrips.unfinished);
         })
         .catch((err) => {
           console.log(err);
@@ -87,9 +90,10 @@ export default {
     } else {
       // Если это попутчик, то счивытваю все его поездки и все поездки всех водителей
       this.readAll('driver')
-        .then(() => {
-          this.getPoints();
-          createMap(this.allTrips, this.myTrips.unfinished);
+        .then((data) => {
+          const myObj = data;
+          const dataToBeSend = this.getPoints(myObj);
+          createMap(dataToBeSend, this.myTrips.unfinished);
         })
         .catch((err) => {
           console.log(err);

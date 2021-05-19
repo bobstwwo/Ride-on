@@ -7,7 +7,7 @@
         <label>Email</label>
       </div>
       <div class="group">
-        <input @change="setPassword($event.target.value.trim())" type="text" required />
+        <input @change="setPassword($event.target.value.trim())" type="password" required />
         <span class="bar"></span>
         <label>Пароль</label>
       </div>

@@ -16,7 +16,7 @@
               <label>Email</label>
             </div>
             <div class="group">
-              <input v-model="password" type="text" required />
+              <input v-model="password" type="password" required />
               <span class="bar"></span>
               <label>Пароль</label>
             </div>

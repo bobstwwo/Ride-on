@@ -1,6 +1,7 @@
 import { db, firebase, roomsRef, admin, messagesRef, usersRef, filesRef, deleteDbField } from '@/firebase';
 import axios from 'axios';
 import store from '@/store/index';
+import router from '@/router/index';
 
 export async function sendMessage(roomID, senderID, text) {
     await roomsRef.doc(roomID).update({
@@ -16,23 +17,51 @@ export async function addNewUserChat(name) {
 
 export async function createRoomChat(oppositeUserId) {
     const userId = await firebase.default.auth().currentUser.uid;
-    const res = await roomsRef.add({
-        users: [userId, oppositeUserId],
-        messages: [],
-        creationTime: Date.now(),
-        lastUpdate: Date.now(),
+    isThereChat(userId, oppositeUserId).then(async isAlreadyChat => {
+        if (!isAlreadyChat) {
+            store.dispatch('skeleton/setLoading', true, { root: true })
+            const res = await roomsRef.add({
+                users: [userId, oppositeUserId],
+                messages: [],
+                creationTime: Date.now(),
+                lastUpdate: Date.now(),
+            });
+
+            try {
+                await usersRef.doc(userId).update({
+                    chatRooms: firebase.firestore.FieldValue.arrayUnion(res.id)
+                })
+                await usersRef.doc(oppositeUserId).update({
+                    chatRooms: firebase.firestore.FieldValue.arrayUnion(res.id)
+                })
+            } catch (error) {
+                console.log(error);
+            }
+
+            store.dispatch('skeleton/setLoading', false, { root: true })
+            router.push({ name: 'chat' });
+        } else {
+            router.push({ name: 'chat' });
+        }
     });
 
-    try {
-        await usersRef.doc(userId).update({
-            chatRooms: firebase.firestore.FieldValue.arrayUnion(res.id)
-        })
-        await usersRef.doc(oppositeUserId).update({
-            chatRooms: firebase.firestore.FieldValue.arrayUnion(res.id)
-        })
-    } catch (error) {
-        console.log(error);
-    }
+}
+
+async function isThereChat(firstUserId, secondUserId) {
+    const user = await db.collection('users').doc(firstUserId).get();
+    const roomIds = user.data().chatRooms;
+
+    let bool = false;
+
+    roomIds.forEach(async roomId => {
+        const room = await roomsRef.doc(roomId).get();
+        if (room.data().users.includes(secondUserId)) {
+            console.log(2);
+            bool = true;
+        }
+    });
+
+    return bool;
 }
 
 export async function fetchRoomsChat() {

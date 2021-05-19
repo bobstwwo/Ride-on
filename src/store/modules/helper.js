@@ -27,9 +27,9 @@ export default {
                         dbRef.on('value', (snapshot) => {
                             const data = snapshot.val();
                             if (data) {
-                                store.state.dataFromBD = data;
+                                // store.state.dataFromBD = data;
                                 store.dispatch('skeleton/setLoading', false, { root: true })
-                                resolve();
+                                resolve(data);
                             } else {
                                 store.dispatch('skeleton/setLoading', false, { root: true })
                                 reject("There is no trips");

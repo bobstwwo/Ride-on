@@ -93,7 +93,7 @@ export default {
       peopleNum: 2,
       showWarn: false,
       requestUrl:
-        'https://geocode-maps.yandex.ru/1.x/?apikey=1aef85e8-6fde-49f7-ae9a-209497902ad2&format=json&geocode=',
+        'https://geocode-maps.yandex.ru/1.x/?apikey=e44fe465-761b-495e-9e8c-b91042469060&format=json&geocode=',
     };
   },
   computed: {
