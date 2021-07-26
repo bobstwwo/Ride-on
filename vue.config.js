@@ -13,7 +13,7 @@ module.exports = {
       },
     },
   },
-  publicPath: "/",
+  publicPath: "/Ride-on/",
   chainWebpack: (config) => {
     config.resolve.alias.set('@', path.resolve(__dirname, 'src'));
   },
