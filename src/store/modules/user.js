@@ -1,5 +1,6 @@
 // import User from '@/main/utils/User.js';
-import { firebase } from '@/firebase';
+import { db, firebase } from '@/firebase';
+// import { firebase } from '@/firebase';
 import Driver from '@/main/utils/Driver';
 import Passenger from '@/main/utils/Passenger';
 
@@ -46,6 +47,7 @@ export default {
         response.ref.getDownloadURL().then((downloadURL) => {
           if (path === "profile-url") {
             store.state.user.profileImg = downloadURL;
+            store.dispatch('uploadUrl', downloadURL);
           } else if (path === "passport-url") {
             store.state.user.passport = downloadURL;
           }
@@ -53,6 +55,10 @@ export default {
         });
       });
     },
+    async uploadUrl(store, url) {
+      const userId = await firebase.default.auth().currentUser.uid;
+      await db.collection('users').doc(userId).set({ imageUrl: url }, { merge: true });
+    }
   },
   getters: {
     user: (state) => state.user,

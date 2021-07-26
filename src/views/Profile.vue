@@ -40,7 +40,7 @@
         <div>Выберите фотографию профиля:</div>
         <ButtonWithoutWarn file="profile"></ButtonWithoutWarn>
       </div>
-      <div v-if="docText" id="zxc">{{ docText }}</div>
+      <!-- <div v-if="docText" id="zxc">{{ docText }}</div> -->
       <div v-if="warning" class="warn">
         <div>
           <span>Примечание:</span>

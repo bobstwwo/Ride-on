@@ -95,9 +95,22 @@ export async function fetchUsernames(chatRooms) {
         if (userIds.includes(doc.id)) {
             arr.push({
                 userId: doc.id,
-                username: doc.data().username
+                username: doc.data().username,
+                imageUrl: doc.data().imageUrl ? doc.data().imageUrl : ''
             });
         }
     });
     await store.commit('chat/setUserNames', arr, { root: true });
+}
+
+export async function fetchUSer(arr) {
+    const userId = await firebase.default.auth().currentUser.uid;
+    let id = null;
+    arr.forEach(element => {
+        if (element !== userId) {
+            id = element;
+        }
+    });
+    let rez = await db.collection('users').doc(id).get();
+    return rez.data();
 }

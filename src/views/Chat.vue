@@ -5,10 +5,7 @@
       <div v-if="bool">
         <div v-for="(value, name, index) in chatRooms" v-bind:key="index" @click="onSelectRoom(value)" class="room">
           <div class="room__image">
-            <img
-              src="https://dyl80ryjxr1ke.cloudfront.net/external_assets/hero_examples/hair_beach_v391182663/original.jpeg"
-              alt=""
-            />
+            <img :src="getImg(name)" alt="" />
           </div>
           <div class="room__body">
             <div class="room__body-el">
@@ -43,10 +40,8 @@
         <div v-if="bool" class="right-top">
           <div class="df">
             <div class="topel">
-              <img
-                src="https://dyl80ryjxr1ke.cloudfront.net/external_assets/hero_examples/hair_beach_v391182663/original.jpeg"
-                alt=""
-              />
+              <img :src="selectedUrl" alt="" />
+              <!-- <img :src="profileImage" alt="" /> -->
             </div>
             <div class="surname-top">{{ getSurname(currentRoom) }}</div>
           </div>
@@ -149,7 +144,7 @@
 
 <script>
 import { db, roomsRef } from '@/firebase';
-import { fetchRoomsChat, fetchUsernames, sendMessage } from '@/main/utils/chat/api';
+import { fetchRoomsChat, fetchUsernames, sendMessage, fetchUSer } from '@/main/utils/chat/api';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import { formatDate, scrollSmoothToBottom } from '@/main/common';
 import Loader from '@/components/chat/Loader';
@@ -168,6 +163,8 @@ export default {
       bool: false,
       noMessage: true,
       selectRoom: false,
+      profileImage: require('@/assets/img/default.jpg'),
+      selectedUrl: require('@/assets/img/default.jpg'),
     };
   },
   computed: {
@@ -203,8 +200,21 @@ export default {
         return 'Room created';
       }
     },
+    getImg(index) {
+      if (this.userNames[index].imageUrl) {
+        return this.userNames[index].imageUrl;
+      } else {
+        return this.profileImage;
+      }
+    },
     onSelectRoom(value) {
       if (!this.currentRoom || this.currentRoom.id !== value.id) {
+        this.chatRooms.forEach((el, index) => {
+          if (el.id === value.id) {
+            const url = this.getImg(index);
+            this.selectedUrl = url;
+          }
+        });
         this.currentRoom = value;
         this.selectRoom = true;
         this.messages = value.data.messages;
@@ -212,11 +222,20 @@ export default {
         const doc = roomsRef.doc(value.id);
         const observer = doc.onSnapshot(
           (docSnapshot) => {
-            // console.log(docSnapshot.data());
+            const length = docSnapshot.data().messages.length;
             if (docSnapshot) {
               this.messages = docSnapshot.data().messages;
-              // this.$refs.lastUpdate[0].innerText = formatDate(new Date(docSnapshot.data().lastUpdate));
-              // this.$refs.lastMsg[0].innerText = docSnapshot.data().messages[messages.length - 1];
+              if (this.messages.length > 0) {
+                this.noMessage = false;
+              }
+              if (length > 0) {
+                try {
+                  this.$refs.lastUpdate[0].innerText = formatDate(new Date(docSnapshot.data().lastUpdate));
+                  this.$refs.lastMsg[0].innerText = docSnapshot.data().messages[length - 1].text;
+                } catch (ex) {
+                  console.log('Some err in Chat.vue');
+                }
+              }
             }
           },
           (err) => {
@@ -254,7 +273,13 @@ export default {
   updated() {
     scrollSmoothToBottom('messages');
   },
-  mounted() {},
+  mounted() {
+    // this.chatRooms.forEach(async (element) => {
+    //   const tre = await fetchUSer(element.data.users);
+    //   this.allUsers.push(tre);
+    // });
+    // console.log(this.allUsers);
+  },
 };
 </script>
 
@@ -310,6 +335,7 @@ export default {
   position: relative;
   border-right: 2px solid rgba($color: grey, $alpha: 0.1);
 }
+
 .from-me {
   max-width: 50%;
   background-color: #f8f9f9;
@@ -455,6 +481,14 @@ svg {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+  }
+}
+@media screen and (max-width: 905px) {
+  .left {
+    display: none;
+  }
+  .right {
+    width: 100%;
   }
 }
 </style>
